@@ -19,7 +19,7 @@ namespace SistemaAcademicoG2.WebApi.Controllers
         }
 
         // GET: api/Rol
-        [HttpGet]
+        [HttpGet]   
         public async Task<ActionResult<IEnumerable<Rol>>> GetRoles()
         {
             return await _context.Roles.ToListAsync();

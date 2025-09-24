@@ -9,7 +9,7 @@ namespace SistemaAcademicoG2.Domain.Repositories
         // Operaciones CRUD básicas
         Task<IEnumerable<Rol>> GetAllAsync();
         Task<Rol> GetByIdAsync(int id);
-        Task AddAsync(Rol rol);
+        Task AddAsync(Rol rol); 
         Task UpdateAsync(Rol rol);
         Task DeleteAsync(int id);
 

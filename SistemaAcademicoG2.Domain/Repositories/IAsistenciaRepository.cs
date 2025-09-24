@@ -11,7 +11,7 @@ public interface IAsistenciaRepository
     Task<Asistencia> GetByIdAsync(int id);
     Task AddAsync(Asistencia asistencia);
     Task UpdateAsync(Asistencia asistencia);
-    Task DeleteAsync(int id);
+    Task DeleteAsync(int id); 
 
     // Extras útiles
     Task<IEnumerable<Asistencia>> GetByFechaAsync(DateTime fecha);

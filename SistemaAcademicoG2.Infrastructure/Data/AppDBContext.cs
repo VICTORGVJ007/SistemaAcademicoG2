@@ -15,7 +15,7 @@ namespace SistemaAcademicoG2.Infrastructure.Data
 
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Asistencia> Asistencias { get; set; }
-        public DbSet<Rol> Roles { get; set; }
+        public DbSet<Rol> Roles { get; set; } 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

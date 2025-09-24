@@ -48,3 +48,4 @@ public class AsistenciaRepository : IAsistenciaRepository
     public async Task<bool> AsistenciaExistsAsync(int id) =>
         await _context.Asistencias.AnyAsync(a => a.Id == id);
 }
+ 

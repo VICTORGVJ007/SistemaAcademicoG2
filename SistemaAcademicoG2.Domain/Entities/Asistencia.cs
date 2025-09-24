@@ -7,7 +7,7 @@ namespace SistemaAcademicoG2.Domain.Entities
     [Table("Asistencias")]
     public class Asistencia
     {
-        [Key]
+        [Key] 
         [Column("AsistenciaId")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }

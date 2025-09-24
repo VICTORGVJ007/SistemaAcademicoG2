@@ -18,7 +18,7 @@ namespace SistemaAcademicoG2.WebApi.Controllers
         {
             _context = context;
         }
-
+         
         // GET: api/Asistencia
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Asistencia>>> GetAsistencias()

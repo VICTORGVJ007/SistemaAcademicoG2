@@ -7,7 +7,7 @@ namespace SistemaAcademicoG2.Domain.Entities
     [Table("Roles")]
     public class Rol
     {
-        [Key]
+        [Key] 
         [Column("RolId")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }

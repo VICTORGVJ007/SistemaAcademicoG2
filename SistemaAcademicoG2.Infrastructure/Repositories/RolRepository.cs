@@ -17,7 +17,7 @@ public class RolRepository : IRolRepository
 
     public async Task<Rol> GetByIdAsync(int id) =>
         await _context.Roles.FindAsync(id);
-
+     
     public async Task AddAsync(Rol rol)
     {
         _context.Roles.Add(rol);

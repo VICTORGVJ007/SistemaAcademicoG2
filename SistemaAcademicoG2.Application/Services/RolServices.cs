@@ -41,6 +41,7 @@ namespace SistemaAcademicoG2.Application.Services
             {
                 return "Error de servidor: " + ex.Message;
             }
+
         }
     }
 }

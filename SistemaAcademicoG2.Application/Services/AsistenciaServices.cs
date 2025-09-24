@@ -13,7 +13,7 @@ namespace SistemaAcademicoG2.Application.Services
 
         public AsistenciaService(IAsistenciaRepository repository)
         {
-            _repository = repository;
+            _repository = repository; 
         }
 
         // Caso de uso: Obtener asistencias por fecha
