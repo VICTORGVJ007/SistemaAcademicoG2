@@ -63,24 +63,6 @@ namespace SistemaAcademicoG2.Application.Services
             }
         }
 
-        // Eliminar una inscripción por Id
-        public async Task<string> EliminarInscripcionAsync(int idInscripcion)
-        {
-            try
-            {
-                var existe = await _repository.InscripcionExistsAsync(idInscripcion);
-                if (!existe)
-                    return "Error: No se encontró la inscripción";
-
-                await _repository.DeleteAsync(idInscripcion);
-                return "Inscripción eliminada correctamente";
-            }
-            catch (Exception ex)
-            {
-                return "Error de servidor: " + ex.Message;
-            }
-        }
-
         // Caso de uso adicional: Obtener inscripciones por grado
         public async Task<IEnumerable<Inscripcion>> ObtenerPorGradoAsync(int idGrado)
         {

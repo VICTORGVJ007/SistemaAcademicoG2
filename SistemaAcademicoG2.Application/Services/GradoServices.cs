@@ -62,23 +62,5 @@ namespace SistemaAcademicoG2.Application.Services
                 return "Error de servidor: " + ex.Message;
             }
         }
-
-        // Eliminar un grado por Id
-        public async Task<string> EliminarGradoAsync(int idGrado)
-        {
-            try
-            {
-                var existe = await _repository.GradoExistsAsync(idGrado);
-                if (!existe)
-                    return "Error: No se encontró el grado";
-
-                await _repository.DeleteAsync(idGrado);
-                return "Grado eliminado correctamente";
-            }
-            catch (Exception ex)
-            {
-                return "Error de servidor: " + ex.Message;
-            }
-        }
     }
 }

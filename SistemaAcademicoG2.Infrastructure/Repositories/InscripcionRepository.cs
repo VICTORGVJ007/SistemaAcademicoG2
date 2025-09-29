@@ -62,7 +62,7 @@ namespace SistemaAcademicoG2.Infrastructure.Repositories
                 .Where(i => i.IdGrado == idGrado)
                 .ToListAsync();
 
-        public async Task<IEnumerable<Inscripcion>> GetByEstadoAsync(string estado) =>
+        public async Task<IEnumerable<Inscripcion>> GetByEstadoAsync(bool estado) =>
             await _context.Inscripciones
                 .Where(i => i.Estado == estado)
                 .ToListAsync();

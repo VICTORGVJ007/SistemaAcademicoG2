@@ -15,6 +15,10 @@ builder.Services.AddScoped<IAsistenciaRepository, AsistenciaRepository>();
 builder.Services.AddScoped<AsistenciaService>();
 builder.Services.AddScoped<IRolRepository, RolRepository>();
 builder.Services.AddScoped<RolService>();
+builder.Services.AddScoped<IGradoRepository, GradoRepository>();
+builder.Services.AddScoped<GradoService>();
+builder.Services.AddScoped<IInscripcionRepository, InscripcionRepository>();
+builder.Services.AddScoped<InscripcionService>();
 builder.Services.AddDbContext<AppDBContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("AivenMySql"),
     new MySqlServerVersion(new Version(8, 0, 36)),
