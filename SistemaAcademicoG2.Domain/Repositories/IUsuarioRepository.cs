@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SistemaAcademicoG2.Domain.Entities;
 
@@ -10,71 +9,75 @@ namespace SistemaAcademicoG2.Domain.Repositories
     /// </summary>
     public interface IUsuarioRepository
     {
-        // ========================
-        // CRUD BÁSICO
-        // ========================
+        // ==========================
+        // CRUD básico
+        // ==========================
 
         /// <summary>
-        /// Obtiene todos los usuarios registrados.
+        /// Obtiene todos los usuarios.
         /// </summary>
         Task<IEnumerable<Usuario>> GetAllAsync();
 
         /// <summary>
-        /// Obtiene un usuario por su identificador numérico.
+        /// Obtiene un usuario por su ID.
         /// </summary>
-        Task<Usuario?> GetByIdAsync(int id);
+        Task<Usuario> GetByIdAsync(int id);
 
         /// <summary>
-        /// Agrega un nuevo usuario.
+        /// Crea un nuevo usuario.
         /// </summary>
         Task AddAsync(Usuario usuario);
 
         /// <summary>
-        /// Actualiza los datos de un usuario existente.
+        /// Actualiza un usuario existente.
         /// </summary>
         Task UpdateAsync(Usuario usuario);
 
         /// <summary>
-        /// Elimina un usuario por su identificador.
+        /// Elimina un usuario por su ID.
         /// </summary>
         Task DeleteAsync(int id);
 
-        // ========================
-        // MÉTODOS DE BÚSQUEDA
-        // ========================
+        // ==========================
+        // Métodos de búsqueda
+        // ==========================
 
         /// <summary>
-        /// Obtiene un usuario por su identificador de cadena (ej. GUID, código).
+        /// Busca usuarios cuyo nombre contenga la cadena indicada.
         /// </summary>
-        Task<Usuario?> GetByIdAsync(string id);
+        Task<IEnumerable<Usuario>> GetByNombreAsync(string nombre);
 
         /// <summary>
-        /// Obtiene un usuario por su nombre de usuario.
+        /// Obtiene un usuario por su correo.
         /// </summary>
-        Task<Usuario?> GetByUsernameAsync(string username);
+        Task<Usuario> GetByCorreoAsync(string correo);
 
         /// <summary>
-        /// Obtiene un usuario validando nombre de usuario y contraseña.
+        /// Valida las credenciales de login (correo y contraseña).
         /// </summary>
-        Task<Usuario?> GetByUsernameAndPasswordAsync(string username, string password);
-
-        // ========================
-        // VALIDACIONES
-        // ========================
+        Task<Usuario> ValidarLoginAsync(string correo, string password);
 
         /// <summary>
-        /// Verifica si existe un usuario con el nombre de usuario especificado.
+        /// Obtiene un usuario por nombre de usuario y contraseña.
         /// </summary>
-        Task<bool> UserExistsAsync(string username);
+        Task<Usuario?> GetByUsernameAndPasswordAsync(string nombreUsuario, string clave);
+
+        // ==========================
+        // Métodos de validación
+        // ==========================
 
         /// <summary>
-        /// Verifica si existe un usuario con el identificador numérico especificado.
+        /// Verifica si existe un usuario con el correo indicado.
         /// </summary>
-        Task<bool> UserExistsAsync(int id);
+        Task<bool> ExisteCorreoAsync(string correo);
+
+        // ==========================
+        // Métodos de utilidades
+        // ==========================
 
         /// <summary>
-        /// Verifica si un usuario ya existe en base a su información completa.
+        /// Devuelve la cantidad de usuarios registrados.
         /// </summary>
-        Task<bool> UserExistsAsync(Usuario usuario);
+        Task<int> CountAsync();
     }
 }

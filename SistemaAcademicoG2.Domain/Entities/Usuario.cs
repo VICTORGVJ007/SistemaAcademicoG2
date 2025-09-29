@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SistemaAcademicoG2.Domain.Entities
 {
-    [Table("Usuario")]  // Nombre de la tabla en la BD
+    [Table("T_Usuario")]  // Nombre de la tabla en la BD
     public class Usuario
     {
         [Key]
@@ -18,14 +18,29 @@ namespace SistemaAcademicoG2.Domain.Entities
         [Column("IdRol")]
         public int IdRol { get; set; }
 
-        [Column("Usuario")]
-        public string Usuarios { get; set; }  // debería ser string, no int
+        [Required]
+        [Column("Nombre")]
+        [MaxLength(100)] 
+        public string Nombre { get; set; }
 
+        [Required]
         [Column("Apellido")]
-        public string Apellido { get; set; } // también mejor como string
+        [MaxLength(100)]
+        public string Apellido { get; set; }
 
+        [Required]
+        [Column("Correo")]
+        [MaxLength(150)]
+        public string Correo { get; set; } 
+
+        [Required]
         [Column("Clave")]
-        [MaxLength(50)]
+        [MaxLength(250)] 
         public string Clave { get; set; }
+
+        [Column("Estado")]
+        public bool Estado { get; set; }   
+
+
     }
 }

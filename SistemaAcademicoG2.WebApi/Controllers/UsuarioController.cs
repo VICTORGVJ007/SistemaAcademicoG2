@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SistemaAcademicoG2.Domain.Entities;
-using SistemaAcademicoG2.Domain.Repositories;
+using SistemaAcademicoG2.Application.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -10,73 +10,99 @@ namespace SistemaAcademicoG2.WebApi.Controllers
     [ApiController]
     public class UsuarioController : ControllerBase
     {
-        private readonly IUsuarioRepository _usuarioRepository;
+        private readonly UsuarioService _usuarioService;
 
-        public UsuarioController(IUsuarioRepository usuarioRepository)
+        public UsuarioController(UsuarioService usuarioService)
         {
-            _usuarioRepository = usuarioRepository;
+            _usuarioService = usuarioService;
         }
 
-        // ============================
+        // ==========================
         // GET: api/Usuario
-        // ============================
+        // ==========================
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios()
         {
-            var usuarios = await _usuarioRepository.GetAllAsync();
+            var usuarios = await _usuarioService.ObtenerUsuariosActivosAsync();
             return Ok(usuarios);
         }
 
-        // ============================
+        // ==========================
         // GET: api/Usuario/5
-        // ============================
+        // ==========================
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Usuario>> GetUsuario(int id)
         {
-            var usuario = await _usuarioRepository.GetByIdAsync(id);
-
+            var usuario = await _usuarioService.ObtenerUsuarioPorIdAsync(id);
             if (usuario == null)
-                return NotFound();
-
+                return NotFound("Usuario no encontrado o inactivo.");
             return Ok(usuario);
         }
 
-        // ============================
+        // ==========================
         // POST: api/Usuario
-        // ============================
+        // ==========================
         [HttpPost]
-        public async Task<ActionResult<Usuario>> PostUsuario([FromBody] Usuario usuario)
+        public async Task<ActionResult> PostUsuario([FromBody] Usuario usuario)
         {
-            await _usuarioRepository.AddAsync(usuario);
+            var resultado = await _usuarioService.AgregarUsuarioAsync(usuario);
+
+            if (resultado.StartsWith("Error"))
+                return BadRequest(resultado);
+
             return CreatedAtAction(nameof(GetUsuario), new { id = usuario.IdUsuario }, usuario);
         }
 
-        // ============================
+        // ==========================
         // PUT: api/Usuario/5
-        // ============================
+        // ==========================
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> PutUsuario(int id, [FromBody] Usuario usuario)
+        public async Task<ActionResult> PutUsuario(int id, [FromBody] Usuario usuario)
         {
             if (id != usuario.IdUsuario)
                 return BadRequest("El ID no coincide con el usuario enviado.");
 
-            await _usuarioRepository.UpdateAsync(usuario);
+            var resultado = await _usuarioService.ModificarUsuarioAsync(usuario);
+
+            if (resultado.StartsWith("Error"))
+                return NotFound(resultado);
+
             return NoContent();
         }
 
-        // ============================
-        // DELETE: api/Usuario/5
-        // ============================
+        // ==========================
+        // DELETE (Soft Delete): api/Usuario/5
+        // ==========================
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> DeleteUsuario(int id)
+        public async Task<ActionResult> DeleteUsuario(int id)
         {
-            var usuario = await _usuarioRepository.GetByIdAsync(id);
+            var resultado = await _usuarioService.EliminarUsuarioAsync(id);
+
+            if (resultado.StartsWith("Error"))
+                return NotFound(resultado);
+
+            return NoContent();
+        }
+
+        // ==========================
+        // POST: api/Usuario/login
+        // ==========================
+        [HttpPost("login")]
+        public async Task<ActionResult<Usuario>> Login([FromBody] LoginRequest request)
+        {
+            var usuario = await _usuarioService.AutenticarAsync(request.NombreUsuario, request.Clave);
 
             if (usuario == null)
-                return NotFound();
+                return Unauthorized("Usuario o contraseña incorrectos.");
 
-            await _usuarioRepository.DeleteAsync(id);
-            return NoContent();
+            return Ok(usuario);
         }
+    }
+
+    // Clase de request para login
+    public class LoginRequest
+    {
+        public string NombreUsuario { get; set; }
+        public string Clave { get; set; }
     }
 }
