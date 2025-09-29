@@ -1,9 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using SistemaAcademicoG2.Infrastructure.Data;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using SistemaAcademicoG2.Domain.Repositories;
+using SistemaAcademicoG2.Application.Services;
+using SistemaAcademicoG2.Infrastructure.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddScoped<INotaRepository  , NotaRepository>();
+builder.Services.AddScoped<NotaService>();
+builder.Services.AddScoped<IAsignaturaRepository, AsignaturaRepository>();
+builder.Services.AddScoped<AsignaturaService>();
 builder.Services.AddDbContext<AppDBContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("AivenMySql"),
     new MySqlServerVersion(new Version(8, 0, 36)),
