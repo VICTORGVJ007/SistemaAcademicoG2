@@ -14,7 +14,7 @@ namespace SistemaAcademicoG2.Domain.Repositories
         Task DeleteAsync(int id);
 
         // Métodos adicionales útiles
-        Task<IEnumerable<Rol>> GetByEstadoAsync(string estado);
+        Task<IEnumerable<Rol>> GetByEstadoAsync(bool estado);
         Task<bool> RolExistsAsync(int id);
         Task<bool> RolExistsAsync(string nombre);
     }

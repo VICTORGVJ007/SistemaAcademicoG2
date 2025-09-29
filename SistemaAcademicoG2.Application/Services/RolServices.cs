@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SistemaAcademicoG2.Domain.Entities;
-using SistemaAcademicoG2.Domain.Entities;
+//using SistemaAcademicoG2.Domain.Entities;
 using SistemaAcademicoG2.Domain.Repositories;
 
 namespace SistemaAcademicoG2.Application.Services
@@ -21,7 +21,7 @@ namespace SistemaAcademicoG2.Application.Services
         public async Task<IEnumerable<Rol>> ObtenerRolesActivosAsync()
         {
             var roles = await _repository.GetAllAsync();
-            return roles.Where(r => r.Estado.ToLower() == "activo");
+            return roles.Where(r => r.Nombre.ToLower() == "activo");
         }
 
         // Caso de uso: Agregar rol (evitar duplicados por nombre)
@@ -33,7 +33,7 @@ namespace SistemaAcademicoG2.Application.Services
                 if (existe)
                     return "Error: Ya existe un rol con ese nombre";
 
-                nuevoRol.Estado = "Activo"; // Estado por defecto
+                nuevoRol.Estado = true; // Estado activo por defecto
                 await _repository.AddAsync(nuevoRol);
                 return "Rol agregado correctamente";
             }
@@ -41,7 +41,9 @@ namespace SistemaAcademicoG2.Application.Services
             {
                 return "Error de servidor: " + ex.Message;
             }
-
         }
+
+
     }
 }
+

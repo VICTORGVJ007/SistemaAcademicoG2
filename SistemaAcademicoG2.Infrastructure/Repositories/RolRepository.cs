@@ -40,7 +40,7 @@ public class RolRepository : IRolRepository
         }
     }
 
-    public async Task<IEnumerable<Rol>> GetByEstadoAsync(string estado) =>
+    public async Task<IEnumerable<Rol>> GetByEstadoAsync(bool estado) =>
         await _context.Roles.Where(r => r.Estado == estado).ToListAsync();
 
     public async Task<bool> RolExistsAsync(int id) =>
