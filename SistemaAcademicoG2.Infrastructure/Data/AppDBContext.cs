@@ -21,7 +21,7 @@ namespace SistemaAcademicoG2.Infrastructure.Data
         public DbSet<Inscripcion> Inscripciones { get; set; }
         public DbSet<Asignatura> Asignaturas { get; set; }
         public DbSet<Nota> Notas { get; set; }
-
+        public DbSet<GradoAsignatura> GradoAsignaturas { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Usuario>().ToTable("t_Usuario");

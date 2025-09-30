@@ -7,20 +7,25 @@ using SistemaAcademicoG2.Infrastructure.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddScoped<INotaRepository  , NotaRepository>();
-builder.Services.AddScoped<NotaService>();
+// Repositorios
+builder.Services.AddScoped<INotaRepository, NotaRepository>();
 builder.Services.AddScoped<IAsignaturaRepository, AsignaturaRepository>();
-builder.Services.AddScoped<AsignaturaService>();
 builder.Services.AddScoped<IAsistenciaRepository, AsistenciaRepository>();
-builder.Services.AddScoped<AsistenciaService>();
 builder.Services.AddScoped<IRolRepository, RolRepository>();
-builder.Services.AddScoped<RolService>();
 builder.Services.AddScoped<IGradoRepository, GradoRepository>();
-builder.Services.AddScoped<GradoService>();
 builder.Services.AddScoped<IInscripcionRepository, InscripcionRepository>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IGradoAsignaturaRepository, GradoAsignaturaRepository>();
+
+// Servicios
+builder.Services.AddScoped<NotaService>();
+builder.Services.AddScoped<AsignaturaService>();
+builder.Services.AddScoped<AsistenciaService>();
+builder.Services.AddScoped<RolService>();
+builder.Services.AddScoped<GradoService>();
 builder.Services.AddScoped<InscripcionService>();
-builder.Services.AddScoped<IUsuarioRepository, IUsuarioRepository>();
 builder.Services.AddScoped<UsuarioService>();
+
 builder.Services.AddDbContext<AppDBContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("AivenMySql"),
     new MySqlServerVersion(new Version(8, 0, 36)),
