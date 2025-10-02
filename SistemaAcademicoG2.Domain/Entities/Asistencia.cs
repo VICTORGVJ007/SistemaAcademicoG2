@@ -12,7 +12,7 @@ namespace SistemaAcademicoG2.Domain.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Column]
+        [Column ("Nombre")]
         [Required(ErrorMessage = "El nombre es obligatorio")]
         [StringLength(100)]
         public string Nombre { get; set; }
@@ -26,7 +26,8 @@ namespace SistemaAcademicoG2.Domain.Entities
         public DateTime Fecha { get; set; }
         [Column("Estado")]
         [Required(ErrorMessage = "El estado es obligatorio")]
-        [StringLength(20)]
         public bool Estado { get; set; }
+       
+
     }
 }

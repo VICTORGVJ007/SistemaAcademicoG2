@@ -19,7 +19,6 @@ namespace SistemaAcademicoG2.Domain.Entities
 
         [Column("Estado")]
         [Required(ErrorMessage = "El estado es obligatorio")]
-        [StringLength(20)]
         public bool Estado { get; set; }
     }
 }
