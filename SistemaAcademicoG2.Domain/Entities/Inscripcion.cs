@@ -17,7 +17,7 @@ namespace SistemaAcademico.Domain.Entities
         [Required(ErrorMessage = "El ID de la inscripción es obligatorio")]
         public int IdInscripcion { get; set; }
 
-        [Column("idUsuario")]
+        [Column("IdUsuario")]
         [Required(ErrorMessage = "El usuario es obligatorio")]
         public int IdUsuario { get; set; }
 
@@ -32,7 +32,6 @@ namespace SistemaAcademico.Domain.Entities
 
         [Column("estado")]
         [Required(ErrorMessage = "El estado de la inscripción es obligatorio")]
-        [StringLength(20)]
         public bool Estado { get; set; }
     }
 }
