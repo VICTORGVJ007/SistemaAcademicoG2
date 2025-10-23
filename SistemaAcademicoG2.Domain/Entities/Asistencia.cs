@@ -14,11 +14,11 @@ namespace SistemaAcademicoG2.Domain.Entities
 
         [Column ("IdUsuario")]
         [Required(ErrorMessage = "El nombre es obligatorio")]
-        public string IdUsuario { get; set; }
+        public int IdUsuario { get; set; }
 
         [Column("IdGrado")]
         [Required(ErrorMessage = "El grado es obligatorio")]
-        public string IdGrado { get; set; }
+        public int IdGrado { get; set; }
 
         [Column("Fecha")]
         [Required]

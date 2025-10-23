@@ -1,8 +1,6 @@
 ﻿using SistemaAcademicoG2.Domain.Entities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 public interface IAsistenciaRepository
@@ -11,11 +9,11 @@ public interface IAsistenciaRepository
     Task<Asistencia> GetByIdAsync(int id);
     Task AddAsync(Asistencia asistencia);
     Task UpdateAsync(Asistencia asistencia);
-    Task DeleteAsync(int id); 
-
-    // Extras útiles
+    Task DeleteAsync(int id);
     Task<IEnumerable<Asistencia>> GetByFechaAsync(DateTime fecha);
-    Task<IEnumerable<Asistencia>> GetByNombreAsync(string nombre);
+
+    // ✅ Buscar asistencias por ID de usuario (entero)
+    Task<IEnumerable<Asistencia>> GetByUsuarioAsync(int idUsuario);
+
     Task<bool> AsistenciaExistsAsync(int id);
 }
-
