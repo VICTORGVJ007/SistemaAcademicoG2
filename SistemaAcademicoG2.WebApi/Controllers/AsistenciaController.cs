@@ -44,14 +44,14 @@ namespace SistemaAcademicoG2.WebApi.Controllers
         {
             _context.Asistencias.Add(asistencia);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetAsistencia), new { id = asistencia.Id }, asistencia);
+            return CreatedAtAction(nameof(GetAsistencia), new { id = asistencia.IdAsistencia }, asistencia);
         }
 
         // PUT: api/Asistencia/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAsistencia(int id, Asistencia asistencia)
         {
-            if (id != asistencia.Id)
+            if (id != asistencia.IdAsistencia)
             {
                 return BadRequest();
             }
@@ -96,7 +96,7 @@ namespace SistemaAcademicoG2.WebApi.Controllers
         [NonAction]
         private bool AsistenciaExists(int id)
         {
-            return _context.Asistencias.Any(e => e.Id == id);
+            return _context.Asistencias.Any(e => e.IdAsistencia == id);
         }
     }
 }

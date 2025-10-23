@@ -27,7 +27,7 @@ namespace SistemaAcademicoG2.Application.Services
         {
             try
             {
-                var existe = await _repository.AsistenciaExistsAsync(nuevaAsistencia.Id);
+                var existe = await _repository.AsistenciaExistsAsync(nuevaAsistencia.IdAsistencia);
                 if (existe)
                     return "Error: Ya existe una asistencia registrada para ese estudiante en esa fecha";
 

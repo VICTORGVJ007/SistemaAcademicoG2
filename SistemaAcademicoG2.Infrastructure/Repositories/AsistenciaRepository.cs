@@ -43,9 +43,9 @@ public class AsistenciaRepository : IAsistenciaRepository
         await _context.Asistencias.Where(a => a.Fecha.Date == fecha.Date).ToListAsync();
 
     public async Task<IEnumerable<Asistencia>> GetByNombreAsync(string nombre) =>
-        await _context.Asistencias.Where(a => a.Nombre.Contains(nombre)).ToListAsync();
+        await _context.Asistencias.Where(a => a.IdUsuario.Contains(nombre)).ToListAsync();
 
     public async Task<bool> AsistenciaExistsAsync(int id) =>
-        await _context.Asistencias.AnyAsync(a => a.Id == id);
+        await _context.Asistencias.AnyAsync(a => a.IdAsistencia == id);
 }
  

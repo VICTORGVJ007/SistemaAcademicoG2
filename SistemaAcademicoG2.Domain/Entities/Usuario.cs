@@ -12,6 +12,7 @@ namespace SistemaAcademicoG2.Domain.Entities
     public class Usuario
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // 👈 Hace que el Id sea autoincrementable
         [Column("IdUsuario")]
         public int IdUsuario { get; set; }
 
@@ -20,7 +21,7 @@ namespace SistemaAcademicoG2.Domain.Entities
 
         [Required]
         [Column("Nombre")]
-        [MaxLength(100)] 
+        [MaxLength(100)]
         public string Nombre { get; set; }
 
         [Required]
@@ -31,15 +32,15 @@ namespace SistemaAcademicoG2.Domain.Entities
         [Required]
         [Column("Correo")]
         [MaxLength(150)]
-        public string Correo { get; set; } 
+        public string Correo { get; set; }
 
         [Required]
         [Column("Clave")]
-        [MaxLength(250)] 
+        [MaxLength(250)]
         public string Clave { get; set; }
 
         [Column("Estado")]
-        public bool Estado { get; set; }   
+        public bool Estado { get; set; }
 
 
     }

@@ -8,22 +8,23 @@ namespace SistemaAcademicoG2.Domain.Entities
     public class Asistencia
     {
         [Key] 
-        [Column("AsistenciaId")]
+        [Column("IdAsistencia")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int IdAsistencia { get; set; }
 
-        [Column ("Nombre")]
+        [Column ("IdUsuario")]
         [Required(ErrorMessage = "El nombre es obligatorio")]
-        [StringLength(100)]
-        public string Nombre { get; set; }
-        [Column("Grado")]
+        public string IdUsuario { get; set; }
+
+        [Column("IdGrado")]
         [Required(ErrorMessage = "El grado es obligatorio")]
-        [StringLength(50)]
-        public string Grado { get; set; }
+        public string IdGrado { get; set; }
+
         [Column("Fecha")]
         [Required]
         [DataType(DataType.Date)]
         public DateTime Fecha { get; set; }
+
         [Column("Estado")]
         [Required(ErrorMessage = "El estado es obligatorio")]
         public bool Estado { get; set; }
