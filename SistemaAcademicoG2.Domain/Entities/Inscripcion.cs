@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SistemaAcademico.Domain.Entities
 {
-    [Table("t_inscripcion")]
+    [Table("t_Inscripcion")]
     public class Inscripcion
     {
         [Key]

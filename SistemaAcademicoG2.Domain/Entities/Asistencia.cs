@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SistemaAcademicoG2.Domain.Entities
 {
-    [Table("Asistencias")]
+    [Table("T_Asistencias")]
     public class Asistencia
     {
         [Key] 

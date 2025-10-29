@@ -35,18 +35,16 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
                 name: "t_Asistencia",
                 columns: table => new
                 {
-                    AsistenciaId = table.Column<int>(type: "int", nullable: false)
+                    IdAsistencia = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Nombre = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Grado = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IdUsuario = table.Column<int>(type: "int", nullable: false),
+                    IdGrado = table.Column<int>(type: "int", nullable: false),
                     Fecha = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     Estado = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_t_Asistencia", x => x.AsistenciaId);
+                    table.PrimaryKey("PK_t_Asistencia", x => x.IdAsistencia);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -144,7 +142,7 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "t_grado_asignatura",
+                name: "t_Grado_asignatura",
                 columns: table => new
                 {
                     IdGradoAsignatura = table.Column<int>(type: "int", nullable: false)
@@ -157,15 +155,15 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_t_grado_asignatura", x => x.IdGradoAsignatura);
+                    table.PrimaryKey("PK_t_Grado_asignatura", x => x.IdGradoAsignatura);
                     table.ForeignKey(
-                        name: "FK_t_grado_asignatura_t_Asignatura_AsignaturaId",
+                        name: "FK_t_Grado_asignatura_t_Asignatura_AsignaturaId",
                         column: x => x.AsignaturaId,
                         principalTable: "t_Asignatura",
                         principalColumn: "idasignatura",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_t_grado_asignatura_t_Grado_GradoIdGrado",
+                        name: "FK_t_Grado_asignatura_t_Grado_GradoIdGrado",
                         column: x => x.GradoIdGrado,
                         principalTable: "t_Grado",
                         principalColumn: "idGrado",
@@ -174,13 +172,13 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_t_grado_asignatura_AsignaturaId",
-                table: "t_grado_asignatura",
+                name: "IX_t_Grado_asignatura_AsignaturaId",
+                table: "t_Grado_asignatura",
                 column: "AsignaturaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_t_grado_asignatura_GradoIdGrado",
-                table: "t_grado_asignatura",
+                name: "IX_t_Grado_asignatura_GradoIdGrado",
+                table: "t_Grado_asignatura",
                 column: "GradoIdGrado");
         }
 
@@ -191,7 +189,7 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
                 name: "t_Asistencia");
 
             migrationBuilder.DropTable(
-                name: "t_grado_asignatura");
+                name: "t_Grado_asignatura");
 
             migrationBuilder.DropTable(
                 name: "t_Inscripcion");

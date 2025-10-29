@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SistemaAcademicoG2.Domain.Entities
 {
-    [Table("t_grado")]
+    [Table("t_Grado")]
     public class Grado
     {
         [Key]

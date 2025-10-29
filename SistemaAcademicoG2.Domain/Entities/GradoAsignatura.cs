@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SistemaAcademicoG2.Domain.Entities
 {
-    [Table("t_grado_asignatura")]
+    [Table("t_Grado_asignatura")]
     public class GradoAsignatura
     {
         [Key]

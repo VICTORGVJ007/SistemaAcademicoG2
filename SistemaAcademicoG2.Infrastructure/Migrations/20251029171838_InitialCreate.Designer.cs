@@ -12,7 +12,7 @@ using SistemaAcademicoG2.Infrastructure.Data;
 namespace SistemaAcademicoG2.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20251002170025_InitialCreate")]
+    [Migration("20251029171838_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -81,12 +81,12 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
 
             modelBuilder.Entity("SistemaAcademicoG2.Domain.Entities.Asistencia", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("IdAsistencia")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("AsistenciaId");
+                        .HasColumnName("IdAsistencia");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("IdAsistencia"));
 
                     b.Property<bool>("Estado")
                         .HasColumnType("tinyint(1)")
@@ -96,19 +96,15 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("Fecha");
 
-                    b.Property<string>("Grado")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("Grado");
+                    b.Property<int>("IdGrado")
+                        .HasColumnType("int")
+                        .HasColumnName("IdGrado");
 
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("Nombre");
+                    b.Property<int>("IdUsuario")
+                        .HasColumnType("int")
+                        .HasColumnName("IdUsuario");
 
-                    b.HasKey("Id");
+                    b.HasKey("IdAsistencia");
 
                     b.ToTable("t_Asistencia", (string)null);
                 });
@@ -170,7 +166,7 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
 
                     b.HasIndex("GradoIdGrado");
 
-                    b.ToTable("t_grado_asignatura");
+                    b.ToTable("t_Grado_asignatura");
                 });
 
             modelBuilder.Entity("SistemaAcademicoG2.Domain.Entities.Nota", b =>
