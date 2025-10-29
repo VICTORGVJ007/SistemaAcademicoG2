@@ -208,6 +208,7 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "t_Grado");
+
         }
     }
 }

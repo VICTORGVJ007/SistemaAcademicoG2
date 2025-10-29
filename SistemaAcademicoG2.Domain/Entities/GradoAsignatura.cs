@@ -22,5 +22,6 @@ namespace SistemaAcademicoG2.Domain.Entities
 
         [Column("Estado")]
         public int Estado { get; set; }
+
     }
 }

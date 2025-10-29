@@ -300,6 +300,7 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
                     b.Navigation("Grado");
                 });
 #pragma warning restore 612, 618
+
         }
     }
 }

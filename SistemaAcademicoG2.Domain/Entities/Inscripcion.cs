@@ -33,5 +33,6 @@ namespace SistemaAcademico.Domain.Entities
         [Column("estado")]
         [Required(ErrorMessage = "El estado de la inscripción es obligatorio")]
         public bool Estado { get; set; }
+
     }
 }
