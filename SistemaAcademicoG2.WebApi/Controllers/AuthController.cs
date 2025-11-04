@@ -25,7 +25,7 @@ namespace SysProducto.WebAPI.Controllers
                 usuario.Nombre,
                 usuario.Apellido,
                 usuario.Correo,
-                usuario.Clave,
+                usuario.Password,
                 usuario.IdRol
             );
 
@@ -41,7 +41,7 @@ namespace SysProducto.WebAPI.Controllers
         {
             var (ok, tokenOrMsg) = await _authService.LoginAsync(
                 usuario.Correo,
-                usuario.Clave
+                usuario.Password
             );
 
             if (!ok)

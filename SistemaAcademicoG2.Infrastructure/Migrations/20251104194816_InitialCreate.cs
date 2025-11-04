@@ -119,6 +119,34 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "t_GradoInscripcion",
+                columns: table => new
+                {
+                    IdGradoInscripcion = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    IdGrado = table.Column<int>(type: "int", nullable: false),
+                    IdInscripcion = table.Column<int>(type: "int", nullable: false),
+                    Estado = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_t_GradoInscripcion", x => x.IdGradoInscripcion);
+                    table.ForeignKey(
+                        name: "FK_t_GradoInscripcion_t_Grado_IdGrado",
+                        column: x => x.IdGrado,
+                        principalTable: "t_Grado",
+                        principalColumn: "idGrado",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_t_GradoInscripcion_t_Inscripcion_IdInscripcion",
+                        column: x => x.IdInscripcion,
+                        principalTable: "t_Inscripcion",
+                        principalColumn: "idInscripcion",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "t_Usuario",
                 columns: table => new
                 {
@@ -138,77 +166,57 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_t_Usuario", x => x.IdUsuario);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "t_Grado_asignatura",
-                columns: table => new
-                {
-                    IdGradoAsignatura = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    IdGrado = table.Column<int>(type: "int", nullable: false),
-                    GradoIdGrado = table.Column<int>(type: "int", nullable: false),
-                    IdAsignatura = table.Column<int>(type: "int", nullable: false),
-                    AsignaturaId = table.Column<int>(type: "int", nullable: false),
-                    Estado = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_t_Grado_asignatura", x => x.IdGradoAsignatura);
                     table.ForeignKey(
-                        name: "FK_t_Grado_asignatura_t_Asignatura_AsignaturaId",
-                        column: x => x.AsignaturaId,
-                        principalTable: "t_Asignatura",
-                        principalColumn: "idasignatura",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_t_Grado_asignatura_t_Grado_GradoIdGrado",
-                        column: x => x.GradoIdGrado,
-                        principalTable: "t_Grado",
-                        principalColumn: "idGrado",
+                        name: "FK_t_Usuario_t_Rol_IdRol",
+                        column: x => x.IdRol,
+                        principalTable: "t_Rol",
+                        principalColumn: "RolId",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_t_Grado_asignatura_AsignaturaId",
-                table: "t_Grado_asignatura",
-                column: "AsignaturaId");
+                name: "IX_t_GradoInscripcion_IdGrado",
+                table: "t_GradoInscripcion",
+                column: "IdGrado");
 
             migrationBuilder.CreateIndex(
-                name: "IX_t_Grado_asignatura_GradoIdGrado",
-                table: "t_Grado_asignatura",
-                column: "GradoIdGrado");
+                name: "IX_t_GradoInscripcion_IdInscripcion",
+                table: "t_GradoInscripcion",
+                column: "IdInscripcion");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_t_Usuario_IdRol",
+                table: "t_Usuario",
+                column: "IdRol");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "t_Asignatura");
+
+            migrationBuilder.DropTable(
                 name: "t_Asistencia");
 
             migrationBuilder.DropTable(
-                name: "t_Grado_asignatura");
-
-            migrationBuilder.DropTable(
-                name: "t_Inscripcion");
+                name: "t_GradoInscripcion");
 
             migrationBuilder.DropTable(
                 name: "t_Nota");
 
             migrationBuilder.DropTable(
-                name: "t_Rol");
-
-            migrationBuilder.DropTable(
                 name: "t_Usuario");
-
-            migrationBuilder.DropTable(
-                name: "t_Asignatura");
 
             migrationBuilder.DropTable(
                 name: "t_Grado");
 
+            migrationBuilder.DropTable(
+                name: "t_Inscripcion");
+
+            migrationBuilder.DropTable(
+                name: "t_Rol");
         }
     }
 }

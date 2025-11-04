@@ -35,7 +35,7 @@ namespace SysProducto.Aplication.Services
                 Nombre = nombre,
                 Apellido = apellido,
                 Correo = correo,
-                Clave = hash,
+                Password = hash,
                 IdRol = rolId,
                 Estado = true
             };
@@ -54,7 +54,7 @@ namespace SysProducto.Aplication.Services
             if (user is null)
                 return (false, "Credenciales inválidas");
 
-            if (!BCrypt.Net.BCrypt.Verify(password, user.Clave))
+            if (!BCrypt.Net.BCrypt.Verify(password, user.Password))
                 return (false, "Credenciales inválidas");
 
             var token = GenerateJwt(user);

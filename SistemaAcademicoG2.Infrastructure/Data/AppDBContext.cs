@@ -21,7 +21,9 @@ namespace SistemaAcademicoG2.Infrastructure.Data
         public DbSet<Inscripcion> Inscripciones { get; set; }
         public DbSet<Asignatura> Asignaturas { get; set; }
         public DbSet<Nota> Notas { get; set; }
-        public DbSet<GradoAsignatura> GradoAsignaturas { get; set; }
+        public DbSet<GradoInscripcion> GradoInscripciones { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Usuario>().ToTable("t_Usuario");
@@ -31,6 +33,7 @@ namespace SistemaAcademicoG2.Infrastructure.Data
             modelBuilder.Entity<Inscripcion>().ToTable("t_Inscripcion");
             modelBuilder.Entity<Asignatura>().ToTable("t_Asignatura");
             modelBuilder.Entity<Nota>().ToTable("t_Nota");
+            modelBuilder.Entity<GradoInscripcion>().ToTable("t_GradoInscripcion");
 
             base.OnModelCreating(modelBuilder);
         }

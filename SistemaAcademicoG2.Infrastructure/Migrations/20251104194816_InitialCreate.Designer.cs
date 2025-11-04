@@ -12,7 +12,7 @@ using SistemaAcademicoG2.Infrastructure.Data;
 namespace SistemaAcademicoG2.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20251029171838_InitialCreate")]
+    [Migration("20251104194816_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -133,40 +133,34 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
                     b.ToTable("t_Grado", (string)null);
                 });
 
-            modelBuilder.Entity("SistemaAcademicoG2.Domain.Entities.GradoAsignatura", b =>
+            modelBuilder.Entity("SistemaAcademicoG2.Domain.Entities.GradoInscripcion", b =>
                 {
-                    b.Property<int>("IdGradoAsignatura")
+                    b.Property<int>("IdGradoInscripcion")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("IdGradoAsignatura");
+                        .HasColumnName("IdGradoInscripcion");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("IdGradoAsignatura"));
-
-                    b.Property<int>("AsignaturaId")
-                        .HasColumnType("int");
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("IdGradoInscripcion"));
 
                     b.Property<int>("Estado")
                         .HasColumnType("int")
                         .HasColumnName("Estado");
 
-                    b.Property<int>("GradoIdGrado")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdAsignatura")
-                        .HasColumnType("int")
-                        .HasColumnName("IdAsignatura");
-
                     b.Property<int>("IdGrado")
                         .HasColumnType("int")
                         .HasColumnName("IdGrado");
 
-                    b.HasKey("IdGradoAsignatura");
+                    b.Property<int>("IdInscripcion")
+                        .HasColumnType("int")
+                        .HasColumnName("IdInscripcion");
 
-                    b.HasIndex("AsignaturaId");
+                    b.HasKey("IdGradoInscripcion");
 
-                    b.HasIndex("GradoIdGrado");
+                    b.HasIndex("IdGrado");
 
-                    b.ToTable("t_Grado_asignatura");
+                    b.HasIndex("IdInscripcion");
+
+                    b.ToTable("t_GradoInscripcion", (string)null);
                 });
 
             modelBuilder.Entity("SistemaAcademicoG2.Domain.Entities.Nota", b =>
@@ -250,12 +244,6 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
                         .HasColumnType("varchar(100)")
                         .HasColumnName("Apellido");
 
-                    b.Property<string>("Clave")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
-                        .HasColumnName("Clave");
-
                     b.Property<string>("Correo")
                         .IsRequired()
                         .HasMaxLength(150)
@@ -276,31 +264,49 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
                         .HasColumnType("varchar(100)")
                         .HasColumnName("Nombre");
 
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("varchar(250)")
+                        .HasColumnName("Clave");
+
                     b.HasKey("IdUsuario");
+
+                    b.HasIndex("IdRol");
 
                     b.ToTable("t_Usuario", (string)null);
                 });
 
-            modelBuilder.Entity("SistemaAcademicoG2.Domain.Entities.GradoAsignatura", b =>
+            modelBuilder.Entity("SistemaAcademicoG2.Domain.Entities.GradoInscripcion", b =>
                 {
-                    b.HasOne("SistemaAcademicoG2.Domain.Entities.Asignatura", "Asignatura")
-                        .WithMany()
-                        .HasForeignKey("AsignaturaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("SistemaAcademicoG2.Domain.Entities.Grado", "Grado")
                         .WithMany()
-                        .HasForeignKey("GradoIdGrado")
+                        .HasForeignKey("IdGrado")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Asignatura");
+                    b.HasOne("SistemaAcademico.Domain.Entities.Inscripcion", "Inscripcion")
+                        .WithMany()
+                        .HasForeignKey("IdInscripcion")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Grado");
+
+                    b.Navigation("Inscripcion");
+                });
+
+            modelBuilder.Entity("SistemaAcademicoG2.Domain.Entities.Usuario", b =>
+                {
+                    b.HasOne("SistemaAcademicoG2.Domain.Entities.Rol", "Rol")
+                        .WithMany()
+                        .HasForeignKey("IdRol")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Rol");
                 });
 #pragma warning restore 612, 618
-
         }
     }
 }

@@ -69,11 +69,11 @@ public class UsuarioRepository : IUsuarioRepository
 
     public async Task<Usuario> ValidarLoginAsync(string correo, string clave) =>
         await _context.Usuarios
-            .FirstOrDefaultAsync(u => u.Correo == correo && u.Clave == clave);
+            .FirstOrDefaultAsync(u => u.Correo == correo && u.Password == clave);
 
     public async Task<Usuario?> GetByUsernameAndPasswordAsync(string nombreUsuario, string clave) =>
         await _context.Usuarios
-            .FirstOrDefaultAsync(u => u.Nombre == nombreUsuario && u.Clave == clave);
+            .FirstOrDefaultAsync(u => u.Nombre == nombreUsuario && u.Password == clave);
 
     // ✅ MÉTODO FALTANTE (REQUIRED BY AuthService + IUsuarioRepository)
     public async Task<Usuario?> GetByEmailAsync(string correo)
@@ -95,4 +95,6 @@ public class UsuarioRepository : IUsuarioRepository
 
     public async Task<int> CountAsync() =>
         await _context.Usuarios.CountAsync();
+
 }
+

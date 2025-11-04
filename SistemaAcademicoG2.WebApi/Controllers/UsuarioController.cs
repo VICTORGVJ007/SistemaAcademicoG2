@@ -97,7 +97,10 @@ namespace SistemaAcademicoG2.WebApi.Controllers
 
             return Ok(usuario);
         }
+
+
     }
+
 
     // Clase de request para login
     public class LoginRequest

@@ -84,7 +84,7 @@ namespace SistemaAcademicoG2.Application.Services
 
                 existente.Nombre = usuario.Nombre;
                 existente.Apellido = usuario.Apellido;
-                existente.Clave = usuario.Clave;
+                existente.Password = usuario.Password;
                 existente.Correo = usuario.Correo;
                 existente.IdRol = usuario.IdRol;
                 existente.Estado = usuario.Estado;
@@ -160,6 +160,20 @@ namespace SistemaAcademicoG2.Application.Services
         public async Task<Usuario?> BuscarPorCorreoAsync(string correo)
         {
             var usuario = await _repository.GetByCorreoAsync(correo);
+            if (usuario != null && usuario.Estado)
+                return usuario;
+            return null;
+        }
+        public async Task<Usuario?> ObtenerPorEmailAsync(string correo)
+        {
+            var usuario = await _repository.GetByEmailAsync(correo);
+            if (usuario != null && usuario.Estado)
+                return usuario;
+            return null;
+        }
+        public async Task<Usuario?> ValidarLoginAsync(string correo, string password)
+        {
+            var usuario = await _repository.ValidarLoginAsync(correo, password);
             if (usuario != null && usuario.Estado)
                 return usuario;
             return null;
