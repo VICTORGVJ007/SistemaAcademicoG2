@@ -1,0 +1,103 @@
+﻿@model List<SistemaAcademicoG2.Domain.Entities.Asignatura>
+
+@{
+    ViewData["Title"] = "Asignaturas";
+}
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Heroicons para íconos -->
+<script src="https://unpkg.com/feather-icons"></script>
+
+<div class="min-h-screen bg-gray-100 p-8">
+    <div class="max-w-5xl mx-auto bg-white shadow-xl rounded-2xl p-6">
+
+        <!-- Encabezado con búsqueda -->
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+            <h2 class="text-3xl font-bold text-gray-700 flex items-center gap-2">
+                📚 Asignaturas Activas
+            </h2>
+
+            <div class="flex items-center gap-2 w-full md:w-auto">
+                <input type="text" id="busqueda" placeholder="Buscar asignatura..."
+                       class="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition" />
+                <button onclick="filtrarAsignaturas()"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition flex items-center gap-1">
+                    <i data-feather="search"></i> Buscar
+                </button>
+            </div>
+
+            <a href="/AsignaturaMvc/Crear"
+               class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition flex items-center gap-1">
+                <i data-feather="plus-circle"></i> Nueva
+            </a>
+        </div>
+
+        @if (Model != null && Model.Count > 0)
+        {
+            <div class="overflow-x-auto">
+                <table id="tablaAsignaturas" class="min-w-full bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <thead class="bg-blue-600 text-white">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-sm font-semibold uppercase">ID</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold uppercase">Nombre</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold uppercase">Estado</th>
+                            <th class="px-6 py-3 text-center text-sm font-semibold uppercase">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        @foreach (var a in Model)
+                        {
+                            var estadoText = (a.Estado ? "Activa" : "Inactiva");
+                            var estadoClase = a.Estado ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700";
+                            var estadoIcono = a.Estado ? "check-circle" : "x-circle";
+
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="px-6 py-4">@a.Id</td>
+                                <td class="px-6 py-4 font-medium text-gray-800">@a.Nombre</td>
+                                <td class="px-6 py-4">
+                                    <span class="px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1 @(estadoClase)">
+                                        <i data-feather="@estadoIcono" class="w-4 h-4"></i> @estadoText
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <div class="flex justify-center gap-3">
+                                        <a href="/AsignaturaMvc/Detalles/@a.Id"
+                                           class="text-blue-600 hover:text-blue-800 font-semibold transition flex items-center gap-1">
+                                            <i data-feather="eye"></i> Ver
+                                        </a>
+                                        <a href="/AsignaturaMvc/Editar/@a.Id"
+                                           class="text-yellow-600 hover:text-yellow-800 font-semibold transition flex items-center gap-1">
+                                            <i data-feather="edit"></i> Editar
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-10 text-gray-500">
+                <p>No hay asignaturas activas registradas.</p>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Script para iconos y búsqueda -->
+<script>
+    feather.replace();
+
+    function filtrarAsignaturas() {
+        const filtro = document.getElementById('busqueda').value.toLowerCase();
+        const filas = document.querySelectorAll('#tablaAsignaturas tbody tr');
+
+        filas.forEach(fila => {
+            const nombre = fila.querySelector('td:nth-child(2)').textContent.toLowerCase();
+            fila.style.display = nombre.includes(filtro) ? '' : 'none';
+        });
+    }
+</script>
