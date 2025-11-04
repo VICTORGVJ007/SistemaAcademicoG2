@@ -1,4 +1,7 @@
-﻿using SistemaAcademicoG2.Domain.Entities;
+﻿
+
+
+using SistemaAcademicoG2.Domain.Entities;
 using SistemaAcademicoG2.Domain.Repositories;
 using System.Collections.Generic;
 using System.Threading.Tasks;

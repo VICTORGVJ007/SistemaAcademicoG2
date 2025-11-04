@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SistemaAcademicoG2.Domain.Entities;
-using SistemaAcademicoG2.Domain.Entities;
 using SistemaAcademicoG2.Infrastructure.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;

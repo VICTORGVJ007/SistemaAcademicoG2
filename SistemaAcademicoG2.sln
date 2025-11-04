@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaAcademicoG2.Infrastr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaAcademicoG2.WebApi", "SistemaAcademicoG2.WebApi\SistemaAcademicoG2.WebApi.csproj", "{16BBBE4D-6BC8-46F1-ACF1-FC267DDCB44D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaAcademicoG2.AppMSTest", "SistemaAcademicoG2.AppMSTest\SistemaAcademicoG2.AppMSTest.csproj", "{35294AA0-2443-4E55-B99D-34278B0FAA78}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaAcademicoG2.WebApplication", "SistemaAcademicoG2.WebApplication\SistemaAcademicoG2.WebApplication.csproj", "{9AC57977-B6BB-4E92-A53C-24A4B4C3A9DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{16BBBE4D-6BC8-46F1-ACF1-FC267DDCB44D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16BBBE4D-6BC8-46F1-ACF1-FC267DDCB44D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16BBBE4D-6BC8-46F1-ACF1-FC267DDCB44D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35294AA0-2443-4E55-B99D-34278B0FAA78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35294AA0-2443-4E55-B99D-34278B0FAA78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35294AA0-2443-4E55-B99D-34278B0FAA78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35294AA0-2443-4E55-B99D-34278B0FAA78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9AC57977-B6BB-4E92-A53C-24A4B4C3A9DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AC57977-B6BB-4E92-A53C-24A4B4C3A9DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AC57977-B6BB-4E92-A53C-24A4B4C3A9DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AC57977-B6BB-4E92-A53C-24A4B4C3A9DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
