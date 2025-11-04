@@ -31,6 +31,13 @@ public class UsuarioRepository : IUsuarioRepository
         await _context.SaveChangesAsync();
     }
 
+    // ✅ MÉTODO FALTANTE (REQUIRED BY AuthService + IUsuarioRepository)
+    public async Task AddUsuarioAsync(Usuario usuario)
+    {
+        _context.Usuarios.Add(usuario);
+        await _context.SaveChangesAsync();
+    }
+
     public async Task UpdateAsync(Usuario usuario)
     {
         _context.Usuarios.Update(usuario);
@@ -67,6 +74,13 @@ public class UsuarioRepository : IUsuarioRepository
     public async Task<Usuario?> GetByUsernameAndPasswordAsync(string nombreUsuario, string clave) =>
         await _context.Usuarios
             .FirstOrDefaultAsync(u => u.Nombre == nombreUsuario && u.Clave == clave);
+
+    // ✅ MÉTODO FALTANTE (REQUIRED BY AuthService + IUsuarioRepository)
+    public async Task<Usuario?> GetByEmailAsync(string correo)
+    {
+        return await _context.Usuarios
+            .FirstOrDefaultAsync(u => u.Correo == correo);
+    }
 
     // ==========================
     // Métodos de validación
