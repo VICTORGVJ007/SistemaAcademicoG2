@@ -6,83 +6,103 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace SysProducto.Aplication.Services
+namespace SistemaAcademicoG2.Application.Services
 {
     public class AuthService
     {
         private readonly IUsuarioRepository _repo;
-        private readonly IConfiguration _cfg;
+        private readonly IConfiguration _config;
 
-        public AuthService(IUsuarioRepository repo, IConfiguration cfg)
+        public AuthService(IUsuarioRepository repo, IConfiguration config)
         {
             _repo = repo;
-            _cfg = cfg;
+            _config = config;
         }
 
-        // ============================
+        // ======================================================
         // ✅ REGISTRO
-        // ============================
-        public async Task<(bool ok, string msg)> RegisterAsync(string nombre, string apellido, string correo, string clave, int rolId)
+        // ======================================================
+        public async Task<(bool ok, string msg)> RegisterAsync(
+            string nombre,
+            string apellido,
+            string correo,
+            string password,
+            int idRol)
         {
-            var existing = await _repo.GetByEmailAsync(correo);
-            if (existing != null)
-                return (false, "El correo ya está registrado");
+            if (await _repo.ExisteCorreoAsync(correo))
+                return (false, "El correo ya está registrado.");
 
-            var hash = BCrypt.Net.BCrypt.HashPassword(clave);
+            if (string.IsNullOrEmpty(password))
+                return (false, "El password no puede ser vacío.");
 
-            var usuario = new Usuario
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
+
+            var nuevoUsuario = new Usuario
             {
                 Nombre = nombre,
                 Apellido = apellido,
                 Correo = correo,
-                Password = hash,
-                IdRol = rolId,
+                PasswordHash = passwordHash,
+                IdRol = idRol,
                 Estado = true
             };
 
-            await _repo.AddUsuarioAsync(usuario);
+            await _repo.AddAsync(nuevoUsuario);
 
-            return (true, "Usuario registrado correctamente");
+            return (true, "Usuario registrado correctamente.");
         }
 
-        // ============================
+        // ======================================================
         // ✅ LOGIN
-        // ============================
+        // ======================================================
         public async Task<(bool ok, string tokenOrMsg)> LoginAsync(string correo, string password)
         {
-            var user = await _repo.GetByEmailAsync(correo);
-            if (user is null)
-                return (false, "Credenciales inválidas");
+            Usuario? usuario = await _repo.GetByCorreoAsync(correo);
 
-            if (!BCrypt.Net.BCrypt.Verify(password, user.Password))
-                return (false, "Credenciales inválidas");
+            if (usuario == null)
+                return (false, "Credenciales incorrectas.");
 
-            var token = GenerateJwt(user);
+            // Validar contraseña
+            if (!BCrypt.Net.BCrypt.Verify(password, usuario.PasswordHash))
+                return (false, "Credenciales incorrectas.");
+
+            string token = GenerarToken(usuario);
+
             return (true, token);
         }
 
-        // ============================
-        // ✅ GENERAR JWT
-        // ============================
-        private string GenerateJwt(Usuario user)
+        // ======================================================
+        // ✅ GENERAR TOKEN JWT
+        // ======================================================
+        private string GenerarToken(Usuario usuario)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_cfg["Jwt:Key"]!));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            // Validar existencia de clave JWT
+            string keyString = _config["Jwt:Key"] ?? throw new Exception("Falta Jwt:Key en appsettings.json");
+            string issuer = _config["Jwt:Issuer"] ?? throw new Exception("Falta Jwt:Issuer en appsettings.json");
+            string audience = _config["Jwt:Audience"] ?? throw new Exception("Falta Jwt:Audience en appsettings.json");
 
-            var claims = new List<Claim>
+            // Leer tiempo de expiración (en minutos)
+            int expireMinutes = 60;
+            if (!int.TryParse(_config["Jwt:ExpireMinutes"], out expireMinutes))
+                expireMinutes = 60; // valor por defecto
+
+            var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Correo),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.NameIdentifier, user.IdUsuario.ToString()),
-                new Claim(ClaimTypes.Name, $"{user.Nombre} {user.Apellido}"),
-                new Claim(ClaimTypes.Role, user.IdRol.ToString())
+                new Claim(JwtRegisteredClaimNames.Sub, usuario.IdUsuario.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, usuario.Correo),
+                new Claim("nombre", usuario.Nombre),
+                new Claim("apellido", usuario.Apellido),
+                new Claim("rol", usuario.IdRol.ToString())
             };
 
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyString));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
             var token = new JwtSecurityToken(
-                issuer: _cfg["Jwt:Issuer"],
-                audience: _cfg["Jwt:Audience"],
+                issuer: issuer,
+                audience: audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(int.Parse(_cfg["Jwt:ExpireMinutes"] ?? "60")),
+                expires: DateTime.UtcNow.AddMinutes(expireMinutes),
                 signingCredentials: creds
             );
 

@@ -72,7 +72,9 @@ builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<GradoInscripcionService>();
 
 // ✅ Tu servicio de autenticación
-builder.Services.AddScoped<SysProducto.Aplication.Services.AuthService>();
+builder.Services.AddScoped<SistemaAcademicoG2.Application.Services.AuthService>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<AuthService>();
 
 // ==========================================
 // ✅ DB CONTEXT

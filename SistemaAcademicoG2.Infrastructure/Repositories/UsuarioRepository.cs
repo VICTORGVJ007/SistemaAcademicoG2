@@ -1,100 +1,95 @@
-﻿using SistemaAcademicoG2.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using SistemaAcademicoG2.Domain.Entities;
 using SistemaAcademicoG2.Domain.Repositories;
 using SistemaAcademicoG2.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-public class UsuarioRepository : IUsuarioRepository
+namespace SistemaAcademicoG2.Infrastructure.Repositories
 {
-    private readonly AppDBContext _context;
-
-    public UsuarioRepository(AppDBContext context)
+    public class UsuarioRepository : IUsuarioRepository
     {
-        _context = context;
-    }
+        private readonly AppDBContext _context;
 
-    // ==========================
-    // CRUD básico
-    // ==========================
-
-    public async Task<IEnumerable<Usuario>> GetAllAsync() =>
-        await _context.Usuarios.ToListAsync();
-
-    public async Task<Usuario> GetByIdAsync(int id) =>
-        await _context.Usuarios.FindAsync(id);
-
-    public async Task AddAsync(Usuario usuario)
-    {
-        _context.Usuarios.Add(usuario);
-        await _context.SaveChangesAsync();
-    }
-
-    // ✅ MÉTODO FALTANTE (REQUIRED BY AuthService + IUsuarioRepository)
-    public async Task AddUsuarioAsync(Usuario usuario)
-    {
-        _context.Usuarios.Add(usuario);
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task UpdateAsync(Usuario usuario)
-    {
-        _context.Usuarios.Update(usuario);
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task DeleteAsync(int id)
-    {
-        var usuario = await _context.Usuarios.FindAsync(id);
-        if (usuario != null)
+        public UsuarioRepository(AppDBContext context)
         {
-            _context.Usuarios.Remove(usuario);
+            _context = context;
+        }
+
+        public async Task<IEnumerable<Usuario>> GetAllAsync()
+        {
+            return await _context.Usuarios.ToListAsync();
+        }
+
+        public async Task<Usuario> GetByIdAsync(int id)
+        {
+            return await _context.Usuarios.FindAsync(id);
+        }
+
+        public async Task AddAsync(Usuario usuario)
+        {
+            await _context.Usuarios.AddAsync(usuario);
             await _context.SaveChangesAsync();
         }
+
+        public async Task UpdateAsync(Usuario usuario)
+        {
+            _context.Usuarios.Update(usuario);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var usuario = await _context.Usuarios.FindAsync(id);
+            if (usuario != null)
+            {
+                _context.Usuarios.Remove(usuario);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<IEnumerable<Usuario>> GetByNombreAsync(string nombre)
+        {
+            return await _context.Usuarios
+                .Where(u => u.Nombre.Contains(nombre))
+                .ToListAsync();
+        }
+
+        public async Task<Usuario?> GetByCorreoAsync(string correo)
+        {
+            return await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.Correo == correo);
+        }
+
+        public async Task<Usuario?> GetByEmailAsync(string correo)
+        {
+            return await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.Correo == correo);
+        }
+
+        public async Task<Usuario?> ValidarLoginAsync(string correo, string password)
+        {
+            return await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.Correo == correo && u.PasswordHash == password);
+        }
+
+        public async Task<Usuario?> GetByUsernameAndPasswordAsync(string nombreUsuario, string clave)
+        {
+            return await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.Nombre == nombreUsuario && u.PasswordHash == clave);
+        }
+
+        public async Task<bool> ExisteCorreoAsync(string correo)
+        {
+            return await _context.Usuarios.AnyAsync(u => u.Correo == correo);
+        }
+
+        public async Task<int> CountAsync()
+        {
+            return await _context.Usuarios.CountAsync();
+        }
+
+        public async Task AddUsuarioAsync(Usuario usuario)
+        {
+            await AddAsync(usuario);
+        }
     }
-
-    // ==========================
-    // Métodos de búsqueda
-    // ==========================
-
-    public async Task<IEnumerable<Usuario>> GetByNombreAsync(string nombre) =>
-        await _context.Usuarios
-            .Where(u => u.Nombre.Contains(nombre))
-            .ToListAsync();
-
-    public async Task<Usuario> GetByCorreoAsync(string correo) =>
-        await _context.Usuarios
-            .FirstOrDefaultAsync(u => u.Correo == correo);
-
-    public async Task<Usuario> ValidarLoginAsync(string correo, string clave) =>
-        await _context.Usuarios
-            .FirstOrDefaultAsync(u => u.Correo == correo && u.Password == clave);
-
-    public async Task<Usuario?> GetByUsernameAndPasswordAsync(string nombreUsuario, string clave) =>
-        await _context.Usuarios
-            .FirstOrDefaultAsync(u => u.Nombre == nombreUsuario && u.Password == clave);
-
-    // ✅ MÉTODO FALTANTE (REQUIRED BY AuthService + IUsuarioRepository)
-    public async Task<Usuario?> GetByEmailAsync(string correo)
-    {
-        return await _context.Usuarios
-            .FirstOrDefaultAsync(u => u.Correo == correo);
-    }
-
-    // ==========================
-    // Métodos de validación
-    // ==========================
-
-    public async Task<bool> ExisteCorreoAsync(string correo) =>
-        await _context.Usuarios.AnyAsync(u => u.Correo == correo);
-
-    // ==========================
-    // Métodos de utilidades
-    // ==========================
-
-    public async Task<int> CountAsync() =>
-        await _context.Usuarios.CountAsync();
-
 }
-

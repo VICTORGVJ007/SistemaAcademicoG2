@@ -12,7 +12,7 @@ using SistemaAcademicoG2.Infrastructure.Data;
 namespace SistemaAcademicoG2.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20251104194816_InitialCreate")]
+    [Migration("20251106032432_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

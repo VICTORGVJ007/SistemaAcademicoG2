@@ -17,8 +17,8 @@ namespace SistemaAcademicoG2.Domain.Entities
         // ===========================
         // ✅ Relación con Rol
         // ===========================
-        [Column("IdRol")]
         [Required]
+        [Column("IdRol")]
         public int IdRol { get; set; }
 
         [ForeignKey("IdRol")]
@@ -44,18 +44,16 @@ namespace SistemaAcademicoG2.Domain.Entities
         public string Correo { get; set; }
 
         // ===========================
-        // ✅ Manejo de contraseñas
+        // ✅ Contraseña Hasheada (se guarda en BD)
         // ===========================
-
-        // ✅ Nuevo campo adoptado: almacena la clave hasheada en BD
-        [Column("Clave")]
         [Required]
+        [Column("Clave")]
         [MaxLength(250)]
         public string PasswordHash { get; set; }
 
-        // ❗ Mantenemos compatibilidad con tu entidad original:
-        // Clave seguirá funcionando si ya existe en BD.
-        // Si prefieres eliminarlo, te lo puedo remover.
+        // ===========================
+        // ✅ Contraseña en texto plano SOLO para entrada
+        // ===========================
         [NotMapped]
         public string? Password { get; set; }
 
@@ -64,11 +62,5 @@ namespace SistemaAcademicoG2.Domain.Entities
         // ===========================
         [Column("Estado")]
         public bool Estado { get; set; }
-
-        // ===========================
-        // ✅ Colecciones opcionales
-        // ===========================
-        // Solo si tu sistema académico las necesita; si NO, las quitamos.
-        // public ICollection<Movimientos>? Movimientos { get; set; }
     }
 }
