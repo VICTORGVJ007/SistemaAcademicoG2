@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaAcademicoG2.Application", "SistemaAcademicoG2.Application\SistemaAcademicoG2.Application.csproj", "{3F97EAC2-0493-4149-AB58-B74DD81522F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SistemaAcademicoG2.Application", "SistemaAcademicoG2.Application\SistemaAcademicoG2.Application.csproj", "{3F97EAC2-0493-4149-AB58-B74DD81522F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaAcademicoG2.Domain", "SistemaAcademicoG2.Domain\SistemaAcademicoG2.Domain.csproj", "{DA2B73B5-63B6-4C47-B1C3-8362797430F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SistemaAcademicoG2.Domain", "SistemaAcademicoG2.Domain\SistemaAcademicoG2.Domain.csproj", "{DA2B73B5-63B6-4C47-B1C3-8362797430F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaAcademicoG2.Infrastructure", "SistemaAcademicoG2.Infrastructure\SistemaAcademicoG2.Infrastructure.csproj", "{E1332E34-2E0A-42CC-BC87-58B6F3A854E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SistemaAcademicoG2.Infrastructure", "SistemaAcademicoG2.Infrastructure\SistemaAcademicoG2.Infrastructure.csproj", "{E1332E34-2E0A-42CC-BC87-58B6F3A854E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaAcademicoG2.WebApi", "SistemaAcademicoG2.WebApi\SistemaAcademicoG2.WebApi.csproj", "{16BBBE4D-6BC8-46F1-ACF1-FC267DDCB44D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SistemaAcademicoG2.WebApi", "SistemaAcademicoG2.WebApi\SistemaAcademicoG2.WebApi.csproj", "{16BBBE4D-6BC8-46F1-ACF1-FC267DDCB44D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaAcademicoG2.AppMSTest", "SistemaAcademicoG2.AppMSTest\SistemaAcademicoG2.AppMSTest.csproj", "{35294AA0-2443-4E55-B99D-34278B0FAA78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SistemaAcademicoG2.AppMSTest", "SistemaAcademicoG2.AppMSTest\SistemaAcademicoG2.AppMSTest.csproj", "{35294AA0-2443-4E55-B99D-34278B0FAA78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaAcademicoG2.WebApplication", "SistemaAcademicoG2.WebApplication\SistemaAcademicoG2.WebApplication.csproj", "{9AC57977-B6BB-4E92-A53C-24A4B4C3A9DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SistemaAcademicoG2.WebApplication", "SistemaAcademicoG2.WebApplication\SistemaAcademicoG2.WebApplication.csproj", "{9AC57977-B6BB-4E92-A53C-24A4B4C3A9DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaAcademicoG2BlazorApp", "SistemaAcademicoG2BlazorApp\SistemaAcademicoG2BlazorApp.csproj", "{A397EE79-E867-4B7D-A4C0-BC9E09A8704A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{9AC57977-B6BB-4E92-A53C-24A4B4C3A9DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AC57977-B6BB-4E92-A53C-24A4B4C3A9DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AC57977-B6BB-4E92-A53C-24A4B4C3A9DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A397EE79-E867-4B7D-A4C0-BC9E09A8704A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A397EE79-E867-4B7D-A4C0-BC9E09A8704A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A397EE79-E867-4B7D-A4C0-BC9E09A8704A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A397EE79-E867-4B7D-A4C0-BC9E09A8704A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
