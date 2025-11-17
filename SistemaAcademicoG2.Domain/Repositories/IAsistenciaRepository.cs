@@ -6,13 +6,17 @@ using System.Threading.Tasks;
 public interface IAsistenciaRepository
 {
     Task<IEnumerable<Asistencia>> GetAllAsync();
+    Task<IEnumerable<Asistencia>> GetActivasAsync();
+    Task<IEnumerable<Asistencia>> GetInactivasAsync();
+
     Task<Asistencia> GetByIdAsync(int id);
     Task AddAsync(Asistencia asistencia);
     Task UpdateAsync(Asistencia asistencia);
-    Task DeleteAsync(int id);
-    Task<IEnumerable<Asistencia>> GetByFechaAsync(DateTime fecha);
 
-    // ✅ Buscar asistencias por ID de usuario (entero)
+    Task<bool> DesactivarAsync(int id);
+    Task<bool> ActivarAsync(int id);
+
+    Task<IEnumerable<Asistencia>> GetByFechaAsync(DateTime fecha);
     Task<IEnumerable<Asistencia>> GetByUsuarioAsync(int idUsuario);
 
     Task<bool> AsistenciaExistsAsync(int id);

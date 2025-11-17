@@ -14,4 +14,8 @@
     <ProjectReference Include="..\SistemaAcademicoG2.Domain\SistemaAcademicoG2.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\AsignaturaF\" />
+  </ItemGroup>
+
 </Project>

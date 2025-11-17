@@ -23,6 +23,12 @@ namespace SistemaAcademicoG2.Infrastructure.Repositories
         public async Task<IEnumerable<Asignatura>> GetAsignaturasAsync() =>
             await _context.Asignaturas.ToListAsync();
 
+        public async Task<IEnumerable<Asignatura>> GetAsignaturasActivasAsync() =>
+            await _context.Asignaturas.Where(a => a.Estado).ToListAsync();
+
+        public async Task<IEnumerable<Asignatura>> GetAsignaturasInactivasAsync() =>
+            await _context.Asignaturas.Where(a => !a.Estado).ToListAsync();
+
         public async Task<Asignatura?> GetAsignaturaByIdAsync(int id) =>
             await _context.Asignaturas.FindAsync(id);
 
@@ -40,27 +46,38 @@ namespace SistemaAcademicoG2.Infrastructure.Repositories
             return asignatura;
         }
 
-        public async Task<bool> DeleteAsignaturaAsync(int id)
+        public async Task<bool> NombreExisteAsync(string nombre)
         {
-            var asignatura = await _context.Asignaturas.FindAsync(id);
-            if (asignatura != null)
-            {
-                _context.Asignaturas.Remove(asignatura);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            return false;
+            return await _context.Asignaturas
+                .AnyAsync(a => a.Nombre.ToLower() == nombre.ToLower());
         }
 
-        // búsqueda por nombre
-        public async Task<IEnumerable<Asignatura>> GetByNombreAsync(string nombre) =>
-            await _context.Asignaturas
-                          .Where(a => a.Nombre.Contains(nombre))
-                          .ToListAsync();
 
-        // Comprobar si una asignatura existe por Id
+        public async Task<bool> DesactivarAsignaturaAsync(int id)
+        {
+            var asignatura = await _context.Asignaturas.FindAsync(id);
+            if (asignatura == null)
+                return false;
+
+            asignatura.Estado = false;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> ActivarAsignaturaAsync(int id)
+        {
+            var asignatura = await _context.Asignaturas.FindAsync(id);
+            if (asignatura == null)
+                return false;
+
+            asignatura.Estado = true;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<bool> AsignaturaExistsAsync(int id) =>
-            await _context.Asignaturas.AnyAsync(a => a.Id == id);
+            await _context.Asignaturas.AnyAsync(a => a.IdAsignatura == id);
     }
+
 }
 

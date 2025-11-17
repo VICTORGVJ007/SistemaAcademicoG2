@@ -44,7 +44,7 @@ public class RolRepository : IRolRepository
         await _context.Roles.Where(r => r.Estado == estado).ToListAsync();
 
     public async Task<bool> RolExistsAsync(int id) =>
-        await _context.Roles.AnyAsync(r => r.Id == id);
+        await _context.Roles.AnyAsync(r => r.IdRol == id);
 
     public async Task<bool> RolExistsAsync(string nombre) =>
         await _context.Roles.AnyAsync(r => r.Nombre == nombre);

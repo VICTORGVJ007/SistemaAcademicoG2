@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-//Referencias
-using SistemaAcademicoG2.Domain.Entities;
+﻿using SistemaAcademicoG2.Domain.Entities;
 using SistemaAcademicoG2.Domain.Repositories;
 using SistemaAcademicoG2.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace SistemaAcademicoG2.Infrastructure.Repositories
 {
@@ -20,15 +17,12 @@ namespace SistemaAcademicoG2.Infrastructure.Repositories
             _context = context;
         }
 
-        // Obtener todas las notas
         public async Task<IEnumerable<Nota>> GetNotasAsync() =>
             await _context.Notas.ToListAsync();
 
-        // Obtener una nota por su Id
         public async Task<Nota?> GetNotaByIdAsync(int id) =>
             await _context.Notas.FindAsync(id);
 
-        // Agregar una nueva nota
         public async Task<Nota> AddNotaAsync(Nota nota)
         {
             _context.Notas.Add(nota);
@@ -36,7 +30,6 @@ namespace SistemaAcademicoG2.Infrastructure.Repositories
             return nota;
         }
 
-        // Actualizar una nota existente
         public async Task<Nota> UpdateNotaAsync(Nota nota)
         {
             _context.Notas.Update(nota);
@@ -44,27 +37,33 @@ namespace SistemaAcademicoG2.Infrastructure.Repositories
             return nota;
         }
 
-        // Eliminar una nota por Id
-        public async Task<bool> DeleteNotaAsync(int id)
+        // ===== SOFT DELETE =====
+        public async Task<bool> DesactivarNotaAsync(int id)
         {
             var nota = await _context.Notas.FindAsync(id);
-            if (nota != null)
-            {
-                _context.Notas.Remove(nota);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            return false;
+
+            if (nota == null)
+                return false;
+
+            nota.Estado = false; // Inactiva
+            await _context.SaveChangesAsync();
+            return true;
         }
 
-        // Buscar notas por período (opcional)
-        public async Task<IEnumerable<Nota>> GetByPeriodoAsync(string periodo) =>
-            await _context.Notas
-                          .Where(n => n.Periodo.Contains(periodo))
-                          .ToListAsync();
+        // ===== ACTIVAR =====
+        public async Task<bool> ActivarNotaAsync(int id)
+        {
+            var nota = await _context.Notas.FindAsync(id);
 
-        // Verificar si una nota existe por Id
+            if (nota == null)
+                return false;
+
+            nota.Estado = true; // Activa
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<bool> NotaExistsAsync(int id) =>
-            await _context.Notas.AnyAsync(n => n.Id == id);
+            await _context.Notas.AnyAsync(n => n.IdNota == id);
     }
 }

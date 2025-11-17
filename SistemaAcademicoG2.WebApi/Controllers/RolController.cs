@@ -43,14 +43,14 @@ namespace SistemaAcademicoG2.WebApi.Controllers
         {
             _context.Roles.Add(rol);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetRol), new { id = rol.Id }, rol);
+            return CreatedAtAction(nameof(GetRol), new { id = rol.IdRol }, rol);
         }
 
         // PUT: api/Rol/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutRol(int id, Rol rol)
         {
-            if (id != rol.Id)
+            if (id != rol.IdRol)
             {
                 return BadRequest();
             }
@@ -95,7 +95,7 @@ namespace SistemaAcademicoG2.WebApi.Controllers
         [NonAction]
         private bool RolExists(int id)
         {
-            return _context.Roles.Any(e => e.Id == id);
+            return _context.Roles.Any(e => e.IdRol == id);
         }
     }
 }

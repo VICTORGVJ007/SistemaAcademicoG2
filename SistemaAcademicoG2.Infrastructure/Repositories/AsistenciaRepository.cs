@@ -15,52 +15,61 @@ public class AsistenciaRepository : IAsistenciaRepository
         _context = context;
     }
 
-    // 🔹 Obtener todas las asistencias
     public async Task<IEnumerable<Asistencia>> GetAllAsync() =>
         await _context.Asistencias.ToListAsync();
 
-    // 🔹 Obtener asistencia por ID
+    public async Task<IEnumerable<Asistencia>> GetActivasAsync() =>
+        await _context.Asistencias.Where(a => a.Estado).ToListAsync();
+
+    public async Task<IEnumerable<Asistencia>> GetInactivasAsync() =>
+        await _context.Asistencias.Where(a => !a.Estado).ToListAsync();
+
     public async Task<Asistencia> GetByIdAsync(int id) =>
         await _context.Asistencias.FirstOrDefaultAsync(a => a.IdAsistencia == id);
 
-    // 🔹 Agregar una nueva asistencia
     public async Task AddAsync(Asistencia asistencia)
     {
         _context.Asistencias.Add(asistencia);
         await _context.SaveChangesAsync();
     }
 
-    // 🔹 Actualizar una asistencia existente
     public async Task UpdateAsync(Asistencia asistencia)
     {
         _context.Asistencias.Update(asistencia);
         await _context.SaveChangesAsync();
     }
 
-    // 🔹 Eliminar una asistencia por ID
-    public async Task DeleteAsync(int id)
+    public async Task<bool> DesactivarAsync(int id)
     {
         var asistencia = await _context.Asistencias.FindAsync(id);
-        if (asistencia != null)
-        {
-            _context.Asistencias.Remove(asistencia);
-            await _context.SaveChangesAsync();
-        }
+        if (asistencia == null) return false;
+
+        asistencia.Estado = false;
+        await _context.SaveChangesAsync();
+        return true;
     }
 
-    // 🔹 Obtener asistencias por fecha
+    public async Task<bool> ActivarAsync(int id)
+    {
+        var asistencia = await _context.Asistencias.FindAsync(id);
+        if (asistencia == null) return false;
+
+        asistencia.Estado = true;
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
     public async Task<IEnumerable<Asistencia>> GetByFechaAsync(DateTime fecha) =>
         await _context.Asistencias
             .Where(a => a.Fecha.Date == fecha.Date)
             .ToListAsync();
 
-    // ✅ Obtener asistencias por ID de usuario
     public async Task<IEnumerable<Asistencia>> GetByUsuarioAsync(int idUsuario) =>
         await _context.Asistencias
             .Where(a => a.IdUsuario == idUsuario)
             .ToListAsync();
 
-    // 🔹 Verificar si una asistencia existe
     public async Task<bool> AsistenciaExistsAsync(int id) =>
         await _context.Asistencias.AnyAsync(a => a.IdAsistencia == id);
 }
+

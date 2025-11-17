@@ -7,7 +7,6 @@ using SistemaAcademicoG2.Domain.Repositories;
 
 namespace SistemaAcademicoG2.Application.Services
 {
-    // Algoritmos con lógica de negocio (UseCase)
     public class NotaService
     {
         private readonly INotaRepository _repository;
@@ -17,77 +16,49 @@ namespace SistemaAcademicoG2.Application.Services
             _repository = repository;
         }
 
-        // Caso de uso: Buscar una nota por su Id (solo activas)
+        // ==============================
+        //   OBTENER NOTA POR ID
+        // ==============================
         public async Task<Nota?> ObtenerNotaPorIdAsync(int id)
         {
             if (id <= 0)
-                return null; // Id no válido
+                return null;
 
             var nota = await _repository.GetNotaByIdAsync(id);
 
-            if (nota != null && nota.Estado)
-                return nota;
-
-            return null; // No encontrada o inactiva
+            return nota != null && nota.Estado ? nota : null;
         }
 
-        // Caso de uso: Modificar una nota
-        public async Task<string> ModificarNotaAsync(Nota nota)
-        {
-            if (nota.Id <= 0)
-                return "Error: Id no válido";
-
-            var existente = await _repository.GetNotaByIdAsync(nota.Id);
-            if (existente == null)
-                return "Error: Nota no encontrada";
-
-            // Actualizamos campos
-            existente.IdUsuario = nota.IdUsuario;
-            existente.IdAsignatura = nota.IdAsignatura;
-            existente.Periodo = nota.Periodo;
-            existente.NotaFinal = nota.NotaFinal;
-            existente.Estado = nota.Estado;
-
-            // Validación automática de estado académico
-            existente.EstadoAcademico = nota.NotaFinal >= 7 ? "Aprobado" : "Reprobado";
-
-            await _repository.UpdateNotaAsync(existente);
-
-            return "Nota modificada correctamente";
-        }
-
-        // Caso de uso: Obtener solo notas activas
-        public async Task<IEnumerable<Nota>> ObtenerNotasActivasAsync()
-        {
-            var notas = await _repository.GetNotasAsync();
-            return notas.Where(n => n.Estado);
-        }
-
-        // Caso de uso: Agregar nota
+        // ==============================
+        //     AGREGAR NOTA NUEVA
+        // ==============================
         public async Task<string> AgregarNotaAsync(Nota nuevaNota)
         {
             try
             {
                 var notas = await _repository.GetNotasAsync();
 
-                // Evitar duplicados: mismo usuario, asignatura y periodo
+                // Validar duplicados (solo un registro por alumno, asignatura, periodo)
                 if (notas.Any(n =>
                     n.IdUsuario == nuevaNota.IdUsuario &&
                     n.IdAsignatura == nuevaNota.IdAsignatura &&
-                    n.Periodo.Trim().ToLower() == nuevaNota.Periodo.Trim().ToLower()))
+                    n.IdPeriodo == nuevaNota.IdPeriodo))
                 {
-                    return "Error: Ya existe una nota para este usuario, asignatura y periodo";
+                    return "Error: Ya existe una nota para este usuario, asignatura y período";
                 }
+
+                // Cálculo automático del promedio
+                nuevaNota.PromedioFinal = (nuevaNota.Nota1 + nuevaNota.Nota2 + nuevaNota.Nota3) / 3;
+
+                // Estado académico automático
+                nuevaNota.EstadoAcademico = nuevaNota.PromedioFinal >= 7 ? "Aprobado" : "Reprobado";
 
                 nuevaNota.Estado = true; // Activa por defecto
 
-                // Validación automática de estado académico
-                nuevaNota.EstadoAcademico = nuevaNota.NotaFinal >= 7 ? "Aprobado" : "Reprobado";
+                var result = await _repository.AddNotaAsync(nuevaNota);
 
-                var notaInsertada = await _repository.AddNotaAsync(nuevaNota);
-
-                if (notaInsertada == null || notaInsertada.Id <= 0)
-                    return "Error: no se pudo agregar la nota";
+                if (result == null || result.IdNota <= 0)
+                    return "Error: No se pudo agregar la nota";
 
                 return "Nota agregada correctamente";
             }
@@ -96,7 +67,69 @@ namespace SistemaAcademicoG2.Application.Services
                 return $"Error de servidor: {ex.Message}";
             }
         }
+
+        // ==============================
+        //     MODIFICAR NOTA EXISTENTE
+        // ==============================
+        public async Task<string> ModificarNotaAsync(Nota nota)
+        {
+            if (nota.IdNota <= 0)
+                return "Error: Id de nota no válido";
+
+            var existente = await _repository.GetNotaByIdAsync(nota.IdNota);
+
+            if (existente == null)
+                return "Error: Nota no encontrada";
+
+            // Actualizar campos
+            existente.IdUsuario = nota.IdUsuario;
+            existente.IdAsignatura = nota.IdAsignatura;
+            existente.IdPeriodo = nota.IdPeriodo;
+
+            existente.Nota1 = nota.Nota1;
+            existente.Nota2 = nota.Nota2;
+            existente.Nota3 = nota.Nota3;
+
+            // Recalcular promedio automáticamente
+            existente.PromedioFinal = (nota.Nota1 + nota.Nota2 + nota.Nota3) / 3;
+
+            // Estado académico automático
+            existente.EstadoAcademico = existente.PromedioFinal >= 7 ? "Aprobado" : "Reprobado";
+
+            existente.Estado = nota.Estado;
+
+            await _repository.UpdateNotaAsync(existente);
+
+            return "Nota modificada correctamente";
+        }
+
+        //Desactivar nota
+        public async Task<string> DesactivarNotaAsync(int id)
+        {
+            if (!await _repository.NotaExistsAsync(id))
+                return "Error: Nota no encontrada";
+
+            var resultado = await _repository.DesactivarNotaAsync(id);
+
+            return resultado ? "Nota desactivada correctamente" : "Error al desactivar la nota";
+        }
+
+        // ==============================
+        //   LISTAR NOTAS ACTIVAS
+        // ==============================
+        public async Task<IEnumerable<Nota>> ObtenerNotasActivasAsync()
+        {
+            var notas = await _repository.GetNotasAsync();
+            return notas.Where(n => n.Estado);
+        }
+
+        // ==============================
+        //     LISTAR NOTAS INACTIVAS
+        // ==============================
+        public async Task<IEnumerable<Nota>> ObtenerNotasInactivasAsync()
+        {
+            var notas = await _repository.GetNotasAsync();
+            return notas.Where(n => !n.Estado);
+        }
     }
 }
-
-

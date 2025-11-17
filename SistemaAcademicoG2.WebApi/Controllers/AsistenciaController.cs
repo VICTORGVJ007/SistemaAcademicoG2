@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using SistemaAcademicoG2.Application.Services;
 using SistemaAcademicoG2.Domain.Entities;
-using SistemaAcademicoG2.Infrastructure.Data;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,91 +11,65 @@ namespace SistemaAcademicoG2.WebApi.Controllers
     [ApiController]
     public class AsistenciaController : ControllerBase
     {
-        private readonly AppDBContext _context;
+        private readonly AsistenciaService _service;
 
-        public AsistenciaController(AppDBContext context)
+        public AsistenciaController(AsistenciaService service)
         {
-            _context = context;
+            _service = service;
         }
-         
-        // GET: api/Asistencia
+
+        // GET: api/asistencia
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Asistencia>>> GetAsistencias()
+        public async Task<ActionResult<IEnumerable<Asistencia>>> GetActivas()
         {
-            return await _context.Asistencias.ToListAsync();
+            var lista = await _service.ObtenerActivasAsync();
+            return Ok(lista);
         }
 
-        // GET: api/Asistencia/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Asistencia>> GetAsistencia(int id)
+        // GET: api/asistencia/inactivas
+        [HttpGet("inactivas")]
+        public async Task<ActionResult<IEnumerable<Asistencia>>> GetInactivas()
         {
-            var asistencia = await _context.Asistencias.FindAsync(id);
-            if (asistencia == null)
-            {
-                return NotFound();
-            }
-            return asistencia;
+            return Ok(await _service.ObtenerInactivasAsync());
         }
 
-        // POST: api/Asistencia
+        // GET: api/asistencia/fecha/2025-11-17
+        [HttpGet("fecha/{fecha}")]
+        public async Task<IActionResult> GetByFecha(DateTime fecha)
+        {
+            return Ok(await _service.ObtenerPorFechaAsync(fecha));
+        }
+
+        // POST: api/asistencia
         [HttpPost]
-        public async Task<ActionResult<Asistencia>> PostAsistencia(Asistencia asistencia)
+        public async Task<IActionResult> Post([FromBody] Asistencia asistencia)
         {
-            _context.Asistencias.Add(asistencia);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetAsistencia), new { id = asistencia.IdAsistencia }, asistencia);
+            var respuesta = await _service.AgregarAsistenciaAsync(asistencia);
+            return Ok(respuesta);
         }
 
-        // PUT: api/Asistencia/5
+        // PUT: api/asistencia/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAsistencia(int id, Asistencia asistencia)
+        public async Task<IActionResult> Put(int id, [FromBody] Asistencia asistencia)
         {
-            if (id != asistencia.IdAsistencia)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(asistencia).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AsistenciaExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            asistencia.IdAsistencia = id;
+            var respuesta = await _service.ModificarAsync(asistencia);
+            return Ok(respuesta);
         }
 
-        // DELETE: api/Asistencia/5
+        // DELETE (NO ELIMINA — DESACTIVA)
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsistencia(int id)
+        public async Task<IActionResult> Desactivar(int id)
         {
-            var asistencia = await _context.Asistencias.FindAsync(id);
-            if (asistencia == null)
-            {
-                return NotFound();
-            }
-
-            _context.Asistencias.Remove(asistencia);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return Ok(await _service.DesactivarAsync(id));
         }
 
-        [NonAction]
-        private bool AsistenciaExists(int id)
+        // PUT: api/asistencia/activar/5
+        [HttpPut("activar/{id}")]
+        public async Task<IActionResult> Activar(int id)
         {
-            return _context.Asistencias.Any(e => e.IdAsistencia == id);
+            return Ok(await _service.ActivarAsync(id));
         }
     }
 }
+

@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SistemaAcademicoG2.Domain.Entities;
 
 namespace SistemaAcademico.Domain.Entities
 {
@@ -30,9 +31,21 @@ namespace SistemaAcademico.Domain.Entities
         [DataType(DataType.Date)]
         public DateTime FechaIngreso { get; set; }
 
+        [Column("anioLectivo")]
+        [Required(ErrorMessage = "El año lectivo es obligatorio")]
+        [Range(2000, 2100, ErrorMessage = "Ingrese un año válido entre 2000 y 2100")]
+        public int AnioLectivo { get; set; }
+
+
         [Column("estado")]
         [Required(ErrorMessage = "El estado de la inscripción es obligatorio")]
         public bool Estado { get; set; }
 
+        // Relaciones
+        [ForeignKey("IdUsuario")]
+        public Usuario Usuario { get; set; }
+
+        [ForeignKey("IdGrado")]
+        public Grado Grado { get; set; }
     }
 }

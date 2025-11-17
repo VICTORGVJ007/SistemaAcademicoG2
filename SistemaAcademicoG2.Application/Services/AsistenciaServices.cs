@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using SistemaAcademicoG2.Domain.Entities;
+﻿using SistemaAcademicoG2.Domain.Entities;
 using SistemaAcademicoG2.Domain.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SistemaAcademicoG2.Application.Services
 {
@@ -13,31 +12,44 @@ namespace SistemaAcademicoG2.Application.Services
 
         public AsistenciaService(IAsistenciaRepository repository)
         {
-            _repository = repository; 
+            _repository = repository;
         }
 
-        // Caso de uso: Obtener asistencias por fecha
-        public async Task<IEnumerable<Asistencia>> ObtenerPorFechaAsync(DateTime fecha)
+        public async Task<IEnumerable<Asistencia>> ObtenerActivasAsync() =>
+            await _repository.GetActivasAsync();
+
+        public async Task<IEnumerable<Asistencia>> ObtenerInactivasAsync() =>
+            await _repository.GetInactivasAsync();
+
+        public async Task<IEnumerable<Asistencia>> ObtenerPorFechaAsync(DateTime fecha) =>
+            await _repository.GetByFechaAsync(fecha);
+
+        public async Task<IEnumerable<Asistencia>> ObtenerPorUsuarioAsync(int idUsuario) =>
+            await _repository.GetByUsuarioAsync(idUsuario);
+
+        public async Task<string> AgregarAsistenciaAsync(Asistencia asistencia)
         {
-            return await _repository.GetByFechaAsync(fecha);
+            await _repository.AddAsync(asistencia);
+            return "Asistencia registrada correctamente";
         }
 
-        // Caso de uso: Agregar asistencia (evitar duplicados por nombre y fecha)
-        public async Task<string> AgregarAsistenciaAsync(Asistencia nuevaAsistencia)
+        public async Task<string> ModificarAsync(Asistencia asistencia)
         {
-            try
-            {
-                var existe = await _repository.AsistenciaExistsAsync(nuevaAsistencia.IdAsistencia);
-                if (existe)
-                    return "Error: Ya existe una asistencia registrada para ese estudiante en esa fecha";
+            await _repository.UpdateAsync(asistencia);
+            return "Asistencia actualizada correctamente";
+        }
 
-                await _repository.AddAsync(nuevaAsistencia);
-                return "Asistencia registrada correctamente";
-            }
-            catch (Exception ex)
-            {
-                return "Error de servidor: " + ex.Message;
-            }
+        public async Task<string> DesactivarAsync(int id)
+        {
+            var ok = await _repository.DesactivarAsync(id);
+            return ok ? "Asistencia desactivada" : "Error: asistencia no encontrada";
+        }
+
+        public async Task<string> ActivarAsync(int id)
+        {
+            var ok = await _repository.ActivarAsync(id);
+            return ok ? "Asistencia activada" : "Error: asistencia no encontrada";
         }
     }
 }
+

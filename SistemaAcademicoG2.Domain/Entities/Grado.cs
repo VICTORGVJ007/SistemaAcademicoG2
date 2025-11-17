@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SistemaAcademicoG2.Domain.Entities
 {
@@ -14,7 +9,6 @@ namespace SistemaAcademicoG2.Domain.Entities
         [Key]
         [Column("idGrado")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Required(ErrorMessage = "El ID del grado es obligatorio")]
         public int IdGrado { get; set; }
 
         [Column("nombre")]
@@ -26,5 +20,6 @@ namespace SistemaAcademicoG2.Domain.Entities
         [Required(ErrorMessage = "El estado del grado es obligatorio")]
         public bool Estado { get; set; }
 
+        public ICollection<GradoAsignatura>? GradosAsignaturas { get; set; }
     }
 }

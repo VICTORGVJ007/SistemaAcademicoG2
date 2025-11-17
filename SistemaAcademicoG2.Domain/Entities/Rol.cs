@@ -7,18 +7,21 @@ namespace SistemaAcademicoG2.Domain.Entities
     [Table("Roles")]
     public class Rol
     {
-        [Key] 
-        [Column("RolId")]
+        [Key]
+        [Column("IdRol")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int IdRol { get; set; }
 
+        [Required, StringLength(50)]
         [Column("Nombre")]
-        [Required(ErrorMessage = "El nombre del rol es obligatorio")]
-        [StringLength(50)]
         public string Nombre { get; set; }
 
+        [Required]
         [Column("Estado")]
-        [Required(ErrorMessage = "El estado es obligatorio")]
         public bool Estado { get; set; }
+
+        // Relación inversa
+        public ICollection<Usuario>? Usuarios { get; set; }
+
     }
 }

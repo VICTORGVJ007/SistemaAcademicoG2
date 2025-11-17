@@ -10,20 +10,22 @@ namespace SistemaAcademicoG2.Domain.Repositories
     // Contrato del repositorio de asignaturas
     public interface IAsignaturaRepository
     {
-        // Obtener todas las asignaturas
         Task<IEnumerable<Asignatura>> GetAsignaturasAsync();
+        Task<IEnumerable<Asignatura>> GetAsignaturasActivasAsync();
+        Task<IEnumerable<Asignatura>> GetAsignaturasInactivasAsync();
 
-        // Obtener una asignatura por su id
-        Task<Asignatura> GetAsignaturaByIdAsync(int id);
+        Task<Asignatura?> GetAsignaturaByIdAsync(int id);
 
-        // Agregar una nueva asignatura
         Task<Asignatura> AddAsignaturaAsync(Asignatura asignatura);
-
-        // Actualizar una asignatura existente
         Task<Asignatura> UpdateAsignaturaAsync(Asignatura asignatura);
 
-        // Eliminar una asignatura por su id
-        Task<bool> DeleteAsignaturaAsync(int id);
+        Task<bool> DesactivarAsignaturaAsync(int id);
+        Task<bool> ActivarAsignaturaAsync(int id);
+
+        Task<bool> AsignaturaExistsAsync(int id);
+
+        // NUEVO
+        Task<bool> NombreExisteAsync(string nombre);
     }
 }
 

@@ -2,12 +2,11 @@
 using SistemaAcademicoG2.Domain.Entities;
 using SistemaAcademicoG2.Application.Services;
 using System.Collections.Generic;
-using System;
 using System.Threading.Tasks;
 
 namespace SistemaAcademicoG2.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/nota")]
     [ApiController]
     public class NotaController : ControllerBase
     {
@@ -20,31 +19,31 @@ namespace SistemaAcademicoG2.WebApi.Controllers
 
         // GET: api/nota
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Nota>>> Get()
+        public async Task<ActionResult<IEnumerable<Nota>>> GetActivas()
         {
             var notas = await _notaService.ObtenerNotasActivasAsync();
             return Ok(notas);
         }
 
-        // GET: api/nota/5
+        // GET: api/nota/inactivas
+        [HttpGet("inactivas")]
+        public async Task<ActionResult<IEnumerable<Nota>>> GetInactivas()
+        {
+            var notas = await _notaService.ObtenerNotasInactivasAsync();
+            return Ok(notas);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Nota>> GetById(int id)
         {
-            try
-            {
-                var nota = await _notaService.ObtenerNotaPorIdAsync(id);
-                if (nota == null)
-                    return NotFound($"No se encontró una nota activa con ID {id}");
+            var nota = await _notaService.ObtenerNotaPorIdAsync(id);
 
-                return Ok(nota);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
-            }
+            if (nota == null)
+                return NotFound($"No se encontró una nota activa con ID {id}");
+
+            return Ok(nota);
         }
 
-        // POST: api/nota
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Nota nota)
         {
@@ -59,31 +58,28 @@ namespace SistemaAcademicoG2.WebApi.Controllers
             return Ok(resultado);
         }
 
-        // PUT: api/nota/5
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] Nota nota)
         {
-            try
-            {
-                nota.Id = id; // Aseguramos que use el id de la ruta
-                var resultado = await _notaService.ModificarNotaAsync(nota);
+            nota.IdNota = id;
 
-                if (resultado.StartsWith("Error"))
-                    return BadRequest(resultado);
+            var resultado = await _notaService.ModificarNotaAsync(nota);
 
-                return Ok(resultado);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
-            }
+            if (resultado.StartsWith("Error"))
+                return BadRequest(resultado);
+
+            return Ok(resultado);
         }
 
-        // DELETE: api/nota/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            var respuesta = await _notaService.DesactivarNotaAsync(id);
+
+            if (respuesta.StartsWith("Error"))
+                return BadRequest(respuesta);
+
+            return Ok(respuesta);
         }
     }
 }
-

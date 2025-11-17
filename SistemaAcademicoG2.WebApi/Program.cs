@@ -5,8 +5,8 @@ using SistemaAcademicoG2.Infrastructure.Data;
 using SistemaAcademicoG2.Domain.Repositories;
 using SistemaAcademicoG2.Application.Services;
 using SistemaAcademicoG2.Infrastructure.Repositories;
-using SistemaAcademicoG2.BL.Services; // ✅ Agregado para los nuevos servicios
 using System.Text;
+using SistemaAcademicoG2.DAL.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,12 +50,9 @@ builder.Services.AddScoped<IRolRepository, RolRepository>();
 builder.Services.AddScoped<IGradoRepository, GradoRepository>();
 builder.Services.AddScoped<IInscripcionRepository, InscripcionRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IPeriodoRepository, PeriodoRepository>();
+builder.Services.AddScoped<IDocenteAsignaturaGradoRepository, DocenteAsignaturaGradoRepository>();
 
-
-// ✅ Agregados según tu solicitud
-builder.Services.AddScoped<IGradoInscripcionRepository, GradoInscripcionRepository>();
-builder.Services.AddScoped<GradoRepository>(); // necesario para el constructor
-builder.Services.AddScoped<GradoInscripcionRepository>(); // si lo solicitas también como dependencia directa
 
 // ==========================================
 // ✅ SERVICIOS
@@ -67,9 +64,8 @@ builder.Services.AddScoped<RolService>();
 builder.Services.AddScoped<GradoService>();
 builder.Services.AddScoped<InscripcionService>();
 builder.Services.AddScoped<UsuarioService>();
-
-// ✅ Servicio de GradoInscripcion
-builder.Services.AddScoped<GradoInscripcionService>();
+builder.Services.AddScoped<PeriodoServices>();
+builder.Services.AddScoped<DocenteAsignaturaGradoService>();
 
 // ✅ Tu servicio de autenticación
 builder.Services.AddScoped<SistemaAcademicoG2.Application.Services.AuthService>();

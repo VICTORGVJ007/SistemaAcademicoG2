@@ -12,16 +12,20 @@ namespace SistemaAcademicoG2.Domain.Entities
     public class Asignatura
     {
         [Key]
-        [Column("idasignatura")]
-        public int Id { get; set; }
+        [Column("IdAsignatura")]
+        public int IdAsignatura { get; set; }
 
-        [Column("nombre")]
         [Required, StringLength(50)]
+        [Column("Nombre")]
         public string Nombre { get; set; }
 
-        [Column("estado")]
         [Required]
+        [Column("Estado")]
         public bool Estado { get; set; }
+
+        // Relaciones inversas
+        public ICollection<Nota>? Notas { get; set; }
+        public ICollection<DocenteAsignaturaGrado>? Docentes { get; set; } // Relación con GradoAsignatura
     }
 }
 

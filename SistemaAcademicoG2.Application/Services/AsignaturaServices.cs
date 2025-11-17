@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-// Referencia
-using SistemaAcademicoG2.Domain.Entities;
+﻿using SistemaAcademicoG2.Domain.Entities;
 using SistemaAcademicoG2.Domain.Repositories;
 
 namespace SistemaAcademicoG2.Application.Services
 {
-    // Algoritmos con lógica de negocio (Use Case)
     public class AsignaturaService
     {
         private readonly IAsignaturaRepository _repository;
@@ -19,70 +12,60 @@ namespace SistemaAcademicoG2.Application.Services
             _repository = repository;
         }
 
-        // Caso de uso: Buscar una asignatura por Id (solo activas)
-        public async Task<Asignatura?> ObtenerAsignaturaPorIdAsync(int id)
+        public async Task<IEnumerable<Asignatura>> ObtenerActivasAsync()
         {
-            if (id <= 0)
-                return null; // Id no válido
-
-            var asignatura = await _repository.GetAsignaturaByIdAsync(id);
-
-            if (asignatura != null && asignatura.Estado == true)
-                return asignatura;
-
-            return null; // No encontrada o inactiva
+            return await _repository.GetAsignaturasActivasAsync();
         }
 
-        // Caso de uso: Modificar una asignatura
-        public async Task<string> ModificarAsignaturaAsync(Asignatura asignatura)
+        public async Task<IEnumerable<Asignatura>> ObtenerInactivasAsync()
         {
-            if (asignatura.Id <= 0)
-                return "Error: Id no válido";
+            return await _repository.GetAsignaturasInactivasAsync();
+        }
 
-            var existente = await _repository.GetAsignaturaByIdAsync(asignatura.Id);
-            if (existente == null)
-                return "Error: Asignatura no encontrada";
+        public async Task<Asignatura?> ObtenerPorIdAsync(int id)
+        {
+            if (id <= 0) return null;
+            return await _repository.GetAsignaturaByIdAsync(id);
+        }
 
-            // Actualizamos solo los campos necesarios
+        public async Task<string> AgregarAsync(Asignatura asignatura)
+        {
+            if (await _repository.NombreExisteAsync(asignatura.Nombre))
+                return "Error: Ya existe una asignatura con ese nombre.";
+
+            asignatura.Estado = true;
+            await _repository.AddAsignaturaAsync(asignatura);
+            return "Asignatura agregada correctamente.";
+        }
+
+        public async Task<string> ModificarAsync(Asignatura asignatura)
+        {
+            var existente = await _repository.GetAsignaturaByIdAsync(asignatura.IdAsignatura);
+            if (existente == null) return "Error: Asignatura no encontrada.";
+
             existente.Nombre = asignatura.Nombre;
-            existente.Estado = asignatura.Estado; // Permitir cambiar estado
+            existente.Estado = asignatura.Estado;
 
             await _repository.UpdateAsignaturaAsync(existente);
-
-            return "Asignatura modificada correctamente";
+            return "Asignatura modificada correctamente.";
         }
 
-        // Caso de uso: Obtener solo asignaturas activas
-        public async Task<IEnumerable<Asignatura>> ObtenerAsignaturasActivasAsync()
+        public async Task<string> DesactivarAsync(int id)
         {
-            var asignaturas = await _repository.GetAsignaturasAsync();
-            return asignaturas.Where(a => a.Estado == true);
+            if (!await _repository.AsignaturaExistsAsync(id))
+                return "Error: Asignatura no encontrada.";
+
+            await _repository.DesactivarAsignaturaAsync(id);
+            return "Asignatura desactivada correctamente.";
         }
 
-        // Caso de uso: Agregar asignatura (validar duplicado por nombre)
-        public async Task<string> AgregarAsignaturaAsync(Asignatura nuevaAsignatura)
+        public async Task<string> ActivarAsync(int id)
         {
-            try
-            {
-                var asignaturas = await _repository.GetAsignaturasAsync();
+            if (!await _repository.AsignaturaExistsAsync(id))
+                return "Error: Asignatura no encontrada.";
 
-                if (asignaturas.Any(a => a.Nombre.ToLower() == nuevaAsignatura.Nombre.ToLower()))
-                    return "Error: ya existe una asignatura con el mismo nombre";
-
-                nuevaAsignatura.Estado = true; // Activa por defecto
-
-                var insertada = await _repository.AddAsignaturaAsync(nuevaAsignatura);
-
-                if (insertada == null || insertada.Id <= 0)
-                    return "Error: no se pudo agregar la asignatura";
-
-                return "Asignatura agregada correctamente";
-            }
-            catch (Exception ex)
-            {
-                return $"Error de servidor: {ex.Message}";
-            }
+            await _repository.ActivarAsignaturaAsync(id);
+            return "Asignatura activada correctamente.";
         }
     }
 }
-
