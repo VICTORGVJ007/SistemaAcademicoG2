@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace SistemaAcademicoG2.Domain.Entities
 {
@@ -21,14 +22,15 @@ namespace SistemaAcademicoG2.Domain.Entities
         [Column("Estado")]
         public bool Estado { get; set; }
 
-        // Relaciones
+        // Relaciones (pueden ser null)
         [ForeignKey(nameof(IdGrado))]
-        public Grado Grado { get; set; }
+        public Grado? Grado { get; set; }
 
         [ForeignKey(nameof(IdAsignatura))]
-        public Asignatura Asignatura { get; set; }
+        public Asignatura? Asignatura { get; set; }
 
-        // Relación con DocenteAsignaturaGrado
-        public ICollection<DocenteAsignaturaGrado> DocentesGradoAsignatura { get; set; }
+        // Relación con DocenteAsignaturaGrado (puede ser null)
+        public ICollection<DocenteAsignaturaGrado>? DocentesGradoAsignatura { get; set; }
     }
 }
+

@@ -47,13 +47,14 @@ namespace SistemaAcademicoG2.Domain.Entities
 
         // Relaciones
         [ForeignKey("IdUsuario")]
-        public Usuario Usuario { get; set; }
+        public Usuario? Usuario { get; set; }
 
         [ForeignKey("IdAsignatura")]
-        public Asignatura Asignatura { get; set; }
+        public Asignatura? Asignatura { get; set; }
 
         [ForeignKey("IdPeriodo")]
-        public Periodo Periodo { get; set; }
+        public Periodo? Periodo { get; set; }
+
     }
 }
 

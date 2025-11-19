@@ -6,9 +6,22 @@ using SistemaAcademicoG2.Domain.Repositories;
 using SistemaAcademicoG2.Application.Services;
 using SistemaAcademicoG2.Infrastructure.Repositories;
 using System.Text;
-using SistemaAcademicoG2.DAL.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Agrega controladores y configura JSON
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Evita errores por referencias circulares
+        options.JsonSerializerOptions.ReferenceHandler =
+            System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+
+        // Ignora propiedades nulas
+        options.JsonSerializerOptions.DefaultIgnoreCondition =
+            System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+    });
+
 
 // ==========================================
 // ✅ CONFIGURAR JWT
@@ -52,6 +65,11 @@ builder.Services.AddScoped<IInscripcionRepository, InscripcionRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IPeriodoRepository, PeriodoRepository>();
 builder.Services.AddScoped<IDocenteAsignaturaGradoRepository, DocenteAsignaturaGradoRepository>();
+builder.Services.AddScoped<IGradoAsignaturaRepository, GradoAsignaturaRepository>();
+
+// Service
+builder.Services.AddScoped<GradoAsignaturaService>();
+
 
 
 // ==========================================
@@ -66,6 +84,7 @@ builder.Services.AddScoped<InscripcionService>();
 builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<PeriodoServices>();
 builder.Services.AddScoped<DocenteAsignaturaGradoService>();
+builder.Services.AddScoped<GradoAsignaturaService>();
 
 // ✅ Tu servicio de autenticación
 builder.Services.AddScoped<SistemaAcademicoG2.Application.Services.AuthService>();

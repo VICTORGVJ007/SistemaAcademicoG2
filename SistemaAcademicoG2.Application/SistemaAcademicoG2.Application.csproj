@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SistemaAcademicoG2.Domain\SistemaAcademicoG2.Domain.csproj" />
+    <ProjectReference Include="..\SistemaAcademicoG2.DTOs\SistemaAcademicoG2.DTOs.csproj" />
   </ItemGroup>
 
 </Project>

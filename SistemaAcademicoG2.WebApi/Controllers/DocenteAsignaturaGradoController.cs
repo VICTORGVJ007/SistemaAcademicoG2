@@ -1,72 +1,103 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Proyecto.API.DTOs;
+using SistemaAcademicoG2.Application.Services;
 using SistemaAcademicoG2.Domain.Entities;
 
-[Route("api/docente-asignatura-grado")]
-[ApiController]
-public class DocenteAsignaturaGradoController : ControllerBase
+namespace SistemaAcademicoG2.WebApi.Controllers
 {
-    private readonly DocenteAsignaturaGradoService _service;
-
-    public DocenteAsignaturaGradoController(DocenteAsignaturaGradoService service)
+    [Route("api/docente-asignatura-grado")]
+    [ApiController]
+    public class DocenteAsignaturaGradoController : ControllerBase
     {
-        _service = service;
-    }
+        private readonly DocenteAsignaturaGradoService _service;
 
-    [HttpGet]
-    public async Task<IActionResult> GetActivos()
-    {
-        return Ok(await _service.ObtenerActivosAsync());
-    }
+        public DocenteAsignaturaGradoController(DocenteAsignaturaGradoService service)
+        {
+            _service = service;
+        }
 
-    [HttpGet("inactivos")]
-    public async Task<IActionResult> GetInactivos()
-    {
-        return Ok(await _service.ObtenerInactivosAsync());
-    }
+        [HttpGet]
+        public async Task<ActionResult<List<DocenteAsignaturaGradoDTO>>> Get()
+        {
+            var list = await _service.ObtenerActivosAsync();
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetPorId(int id)
-    {
-        var entidad = await _service.ObtenerPorIdAsync(id);
-        if (entidad == null) return NotFound();
+            var dtoList = list.Select(d => new DocenteAsignaturaGradoDTO
+            {
+                IdDGA = d.IdDGA,
+                IdUsuario = d.IdUsuario,
+                NombreDocente = d.Usuario?.Nombre ?? "Sin nombre",
+                IdGrado = d.IdGrado,
+                NombreGrado = d.Grado?.Nombre ?? "Sin grado",
+                IdAsignatura = d.IdAsignatura,
+                NombreAsignatura = d.Asignatura?.Nombre ?? "Sin asignatura",
+                Estado = d.Estado
+            }).ToList();
 
-        return Ok(entidad);
-    }
+            return Ok(dtoList);
+        }
 
-    [HttpPost]
-    public async Task<IActionResult> Post([FromBody] DocenteAsignaturaGrado entidad)
-    {
-        var result = await _service.AgregarAsync(entidad);
-        if (result.StartsWith("Error")) return BadRequest(result);
+        [HttpGet("{id}")]
+        public async Task<ActionResult<DocenteAsignaturaGradoDTO>> GetPorId(int id)
+        {
+            var item = await _service.ObtenerPorIdAsync(id);
+            if (item == null)
+                return NotFound("Registro no encontrado.");
 
-        return Ok(result);
-    }
+            var dto = new DocenteAsignaturaGradoDTO
+            {
+                IdDGA = item.IdDGA,
+                IdUsuario = item.IdUsuario,
+                NombreDocente = item.Usuario?.Nombre ?? "Sin nombre",
+                IdGrado = item.IdGrado,
+                NombreGrado = item.Grado?.Nombre ?? "Sin grado",
+                IdAsignatura = item.IdAsignatura,
+                NombreAsignatura = item.Asignatura?.Nombre ?? "Sin asignatura",
+                Estado = item.Estado
+            };
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Put(int id, [FromBody] DocenteAsignaturaGrado entidad)
-    {
-        entidad.IdDGA = id;
-        var result = await _service.ModificarAsync(entidad);
+            return Ok(dto);
+        }
 
-        if (result.StartsWith("Error")) return BadRequest(result);
-        return Ok(result);
-    }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Editar(int id, DocenteAsignaturaGradoDTO dto)
+        {
+            if (id != dto.IdDGA)
+                return BadRequest("El id no coincide.");
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
-    {
-        var result = await _service.DesactivarAsync(id);
-        if (result.StartsWith("Error")) return BadRequest(result);
+            var entidad = new DocenteAsignaturaGrado
+            {
+                IdDGA = dto.IdDGA,
+                IdUsuario = dto.IdUsuario,
+                IdGrado = dto.IdGrado,
+                IdAsignatura = dto.IdAsignatura,
+                Estado = dto.Estado
+            };
 
-        return Ok(result);
-    }
+            var resultado = await _service.ActualizarAsync(entidad);
+            if (resultado.StartsWith("Error"))
+                return NotFound(resultado);
 
-    [HttpPut("activar/{id}")]
-    public async Task<IActionResult> Activar(int id)
-    {
-        var result = await _service.ActivarAsync(id);
-        if (result.StartsWith("Error")) return BadRequest(result);
+            return NoContent();
+        }
 
-        return Ok(result);
+        [HttpPut("activar/{id}")]
+        public async Task<IActionResult> Activar(int id)
+        {
+            var resultado = await _service.ActivarAsync(id);
+            if (resultado.StartsWith("Error"))
+                return NotFound(resultado);
+
+            return NoContent();
+        }
+
+        [HttpPut("desactivar/{id}")]
+        public async Task<IActionResult> Desactivar(int id)
+        {
+            var resultado = await _service.DesactivarAsync(id);
+            if (resultado.StartsWith("Error"))
+                return NotFound(resultado);
+
+            return NoContent();
+        }
     }
 }

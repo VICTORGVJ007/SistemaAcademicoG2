@@ -1,50 +1,71 @@
-﻿using SistemaAcademicoG2.DAL.Repositories;
-using SistemaAcademicoG2.Domain.Entities;
+﻿using SistemaAcademicoG2.Domain.Entities;
+using SistemaAcademicoG2.Domain.Repositories;
 
-public class DocenteAsignaturaGradoService
+namespace SistemaAcademicoG2.Application.Services
 {
-    private readonly IDocenteAsignaturaGradoRepository _repo;
-
-    public DocenteAsignaturaGradoService(IDocenteAsignaturaGradoRepository repo)
+    public class DocenteAsignaturaGradoService
     {
-        _repo = repo;
-    }
+        private readonly IDocenteAsignaturaGradoRepository _repository;
 
-    public Task<IEnumerable<DocenteAsignaturaGrado>> ObtenerActivosAsync() =>
-        _repo.GetActivosAsync();
+        public DocenteAsignaturaGradoService(IDocenteAsignaturaGradoRepository repository)
+        {
+            _repository = repository;
+        }
 
-    public Task<IEnumerable<DocenteAsignaturaGrado>> ObtenerInactivosAsync() =>
-        _repo.GetInactivosAsync();
+        public async Task<IEnumerable<DocenteAsignaturaGrado>> ObtenerActivosAsync()
+        {
+            return await _repository.GetActivosAsync();
+        }
 
-    public Task<DocenteAsignaturaGrado?> ObtenerPorIdAsync(int id) =>
-        _repo.GetByIdAsync(id);
+        public async Task<IEnumerable<DocenteAsignaturaGrado>> ObtenerInactivosAsync()
+        {
+            return await _repository.GetInactivosAsync();
+        }
 
-    public async Task<string> AgregarAsync(DocenteAsignaturaGrado entidad)
-    {
-        // Validación: evitar relaciones duplicadas
-        if (await _repo.ExisteRelacionAsync(entidad.IdUsuario, entidad.IdGrado, entidad.IdAsignatura))
-            return "Error: Ya existe esta relación docente-asignatura-grado.";
+        public async Task<DocenteAsignaturaGrado?> ObtenerPorIdAsync(int id)
+        {
+            return await _repository.GetByIdAsync(id);
+        }
 
-        entidad.Estado = true;
-        await _repo.AddAsync(entidad);
-        return "Asignación creada correctamente.";
-    }
+        public async Task<string> AgregarAsync(DocenteAsignaturaGrado entidad)
+        {
+            if (await _repository.ExisteDuplicadoAsync(entidad.IdUsuario, entidad.IdGrado, entidad.IdAsignatura))
+                return "Error: Esta relación ya existe.";
 
-    public async Task<string> ModificarAsync(DocenteAsignaturaGrado entidad)
-    {
-        await _repo.UpdateAsync(entidad);
-        return "Registro modificado correctamente.";
-    }
+            entidad.Estado = true;
+            await _repository.AddAsync(entidad);
+            return "Asignación creada correctamente.";
+        }
 
-    public async Task<string> DesactivarAsync(int id)
-    {
-        var ok = await _repo.DesactivarAsync(id);
-        return ok ? "Registro desactivado." : "Error: no encontrado.";
-    }
+        public async Task<string> ActualizarAsync(DocenteAsignaturaGrado entidad)
+        {
+            var existente = await _repository.GetByIdAsync(entidad.IdDGA);
+            if (existente == null)
+                return "Error: Registro no encontrado.";
 
-    public async Task<string> ActivarAsync(int id)
-    {
-        var ok = await _repo.ActivarAsync(id);
-        return ok ? "Registro activado." : "Error: no encontrado.";
+            existente.IdUsuario = entidad.IdUsuario;
+            existente.IdGrado = entidad.IdGrado;
+            existente.IdAsignatura = entidad.IdAsignatura;
+            existente.Estado = entidad.Estado;
+
+            await _repository.SaveChangesAsync();
+            return "Asignación actualizada correctamente.";
+        }
+
+        public async Task<string> DesactivarAsync(int id)
+        {
+            if (!await _repository.DesactivarAsync(id))
+                return "Error: No se encontró el registro.";
+
+            return "Asignación desactivada correctamente.";
+        }
+
+        public async Task<string> ActivarAsync(int id)
+        {
+            if (!await _repository.ActivarAsync(id))
+                return "Error: No se encontró el registro.";
+
+            return "Asignación activada correctamente.";
+        }
     }
 }

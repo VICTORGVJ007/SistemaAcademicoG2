@@ -32,6 +32,6 @@ namespace SistemaAcademicoG2.Domain.Entities
         [Required]
         public bool Estado { get; set; }
 
-        public ICollection<Nota> Notas { get; set; }
+        public ICollection<Nota> Notas { get; set; } = new List<Nota>();
     }
 }
