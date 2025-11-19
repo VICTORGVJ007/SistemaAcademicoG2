@@ -34,11 +34,11 @@ namespace SistemaAcademicoG2.Domain.Entities
         [Column("Nota3")]
         public decimal Nota3 { get; set; }
 
-        [Required]
+   
         [Column("PromedioFinal")]
         public decimal PromedioFinal { get; set; }
 
-        [Required, StringLength(30)]
+        [StringLength(30)]
         [Column("EstadoAcademico")]
         public string EstadoAcademico { get; set; }
 

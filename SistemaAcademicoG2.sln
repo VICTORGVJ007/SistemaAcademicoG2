@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SistemaAcademicoG2.AppMSTes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SistemaAcademicoG2.WebApplication", "SistemaAcademicoG2.WebApplication\SistemaAcademicoG2.WebApplication.csproj", "{9AC57977-B6BB-4E92-A53C-24A4B4C3A9DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaAcademicoG2BlazorApp", "SistemaAcademicoG2BlazorApp\SistemaAcademicoG2BlazorApp.csproj", "{A397EE79-E867-4B7D-A4C0-BC9E09A8704A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SistemaAcademicoG2BlazorApp", "SistemaAcademicoG2BlazorApp\SistemaAcademicoG2BlazorApp.csproj", "{A397EE79-E867-4B7D-A4C0-BC9E09A8704A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaAcademicoG2.DTOs", "SistemaAcademicoG2.DTOs\SistemaAcademicoG2.DTOs.csproj", "{8127D66D-7A79-4FD9-B015-FF42D79A068A}"
 EndProject
