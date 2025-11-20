@@ -28,6 +28,9 @@ namespace SistemaAcademicoG2.Domain.Repositories
         // ✅ Aquí está el método correcto
         Task<Usuario?> GetByEmailAsync(string correo);
 
+        Task<IEnumerable<Usuario>> GetByRolAsync(int idRol);
+
+
         // ==========================
         // Validación
         // ==========================

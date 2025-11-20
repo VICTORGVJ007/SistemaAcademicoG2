@@ -91,5 +91,13 @@ namespace SistemaAcademicoG2.Infrastructure.Repositories
         {
             await AddAsync(usuario);
         }
+
+        public async Task<IEnumerable<Usuario>> GetByRolAsync(int idRol)
+        {
+            return await _context.Usuarios
+                .Where(u => u.IdRol == idRol && u.Estado)
+                .ToListAsync();
+        }
+
     }
 }
