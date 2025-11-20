@@ -1,135 +1,132 @@
-﻿using System;
+﻿using SistemaAcademicoG2.Domain.Entities;
+using SistemaAcademicoG2.Domain.Repositories;
+using SistemaAcademicoG2.DTOs;
+using SistemaAcademicoG2.WebApi.DTOs;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SistemaAcademicoG2.Domain.Entities;
-using SistemaAcademicoG2.Domain.Repositories;
 
 namespace SistemaAcademicoG2.Application.Services
 {
     public class NotaService
     {
-        private readonly INotaRepository _repository;
+        private readonly INotaRepository _notaRepository;
 
-        public NotaService(INotaRepository repository)
+        public NotaService(INotaRepository notaRepository)
         {
-            _repository = repository;
+            _notaRepository = notaRepository;
         }
 
-        // ==============================
-        //   OBTENER NOTA POR ID
-        // ==============================
-        public async Task<Nota?> ObtenerNotaPorIdAsync(int id)
+        // =============================
+        // LISTAR NOTAS ACTIVAS
+        // =============================
+        public async Task<IEnumerable<NotaDTO>> ObtenerNotasActivasAsync()
         {
-            if (id <= 0)
-                return null;
-
-            var nota = await _repository.GetNotaByIdAsync(id);
-
-            return nota != null && nota.Estado ? nota : null;
+            var notas = await _notaRepository.GetNotasWithIncludesAsync();
+            return notas.Where(n => n.Estado).Select(MapToDTO).ToList();
         }
 
-        // ==============================
-        //     AGREGAR NOTA NUEVA
-        // ==============================
-        public async Task<string> AgregarNotaAsync(Nota nuevaNota)
+        // =============================
+        // LISTAR NOTAS INACTIVAS
+        // =============================
+        public async Task<IEnumerable<NotaDTO>> ObtenerNotasInactivasAsync()
         {
-            try
-            {
-                var notas = await _repository.GetNotasAsync();
-
-                // Validar duplicados (solo un registro por alumno, asignatura, periodo)
-                if (notas.Any(n =>
-                    n.IdUsuario == nuevaNota.IdUsuario &&
-                    n.IdAsignatura == nuevaNota.IdAsignatura &&
-                    n.IdPeriodo == nuevaNota.IdPeriodo))
-                {
-                    return "Error: Ya existe una nota para este usuario, asignatura y período";
-                }
-
-                // Cálculo automático del promedio
-                nuevaNota.PromedioFinal = (nuevaNota.Nota1 + nuevaNota.Nota2 + nuevaNota.Nota3) / 3;
-
-                // Estado académico automático
-                nuevaNota.EstadoAcademico = nuevaNota.PromedioFinal >= 7 ? "Aprobado" : "Reprobado";
-
-                nuevaNota.Estado = true; // Activa por defecto
-
-                var result = await _repository.AddNotaAsync(nuevaNota);
-
-                if (result == null || result.IdNota <= 0)
-                    return "Error: No se pudo agregar la nota";
-
-                return "Nota agregada correctamente";
-            }
-            catch (Exception ex)
-            {
-                return $"Error de servidor: {ex.Message}";
-            }
+            var notas = await _notaRepository.GetNotasWithIncludesAsync();
+            return notas.Where(n => !n.Estado).Select(MapToDTO).ToList();
         }
 
-        // ==============================
-        //     MODIFICAR NOTA EXISTENTE
-        // ==============================
+        // =============================
+        // OBTENER POR ID
+        // =============================
+        public async Task<NotaDTO?> ObtenerNotaPorIdAsync(int id)
+        {
+            var nota = await _notaRepository.GetNotaByIdWithIncludesAsync(id);
+            return nota == null ? null : MapToDTO(nota);
+        }
+
+        // =============================
+        // AGREGAR NOTA
+        // =============================
+        public async Task<string> AgregarNotaAsync(Nota nota)
+        {
+            if (nota == null)
+                return "Error: La nota enviada es inválida.";
+
+            nota.PromedioFinal = (nota.Nota1 + nota.Nota2 + nota.Nota3) / 3;
+            nota.EstadoAcademico = nota.PromedioFinal >= 6 ? "Aprobado" : "Reprobado";
+            nota.Estado = true;
+
+            await _notaRepository.AddNotaAsync(nota);
+            return "Nota creada exitosamente.";
+        }
+
+        // =============================
+        // MODIFICAR NOTA
+        // =============================
         public async Task<string> ModificarNotaAsync(Nota nota)
         {
-            if (nota.IdNota <= 0)
-                return "Error: Id de nota no válido";
+            if (!await _notaRepository.NotaExistsAsync(nota.IdNota))
+                return $"Error: No existe una nota con ID {nota.IdNota}.";
 
-            var existente = await _repository.GetNotaByIdAsync(nota.IdNota);
+            nota.PromedioFinal = (nota.Nota1 + nota.Nota2 + nota.Nota3) / 3;
+            nota.EstadoAcademico = nota.PromedioFinal >= 6 ? "Aprobado" : "Reprobado";
 
-            if (existente == null)
-                return "Error: Nota no encontrada";
-
-            // Actualizar campos
-            existente.IdUsuario = nota.IdUsuario;
-            existente.IdAsignatura = nota.IdAsignatura;
-            existente.IdPeriodo = nota.IdPeriodo;
-
-            existente.Nota1 = nota.Nota1;
-            existente.Nota2 = nota.Nota2;
-            existente.Nota3 = nota.Nota3;
-
-            // Recalcular promedio automáticamente
-            existente.PromedioFinal = (nota.Nota1 + nota.Nota2 + nota.Nota3) / 3;
-
-            // Estado académico automático
-            existente.EstadoAcademico = existente.PromedioFinal >= 7 ? "Aprobado" : "Reprobado";
-
-            existente.Estado = nota.Estado;
-
-            await _repository.UpdateNotaAsync(existente);
-
-            return "Nota modificada correctamente";
+            await _notaRepository.UpdateNotaAsync(nota);
+            return "Nota actualizada correctamente.";
         }
 
-        //Desactivar nota
+        // =============================
+        // DESACTIVAR NOTA
+        // =============================
         public async Task<string> DesactivarNotaAsync(int id)
         {
-            if (!await _repository.NotaExistsAsync(id))
-                return "Error: Nota no encontrada";
+            if (!await _notaRepository.NotaExistsAsync(id))
+                return $"Error: No existe una nota con ID {id}.";
 
-            var resultado = await _repository.DesactivarNotaAsync(id);
-
-            return resultado ? "Nota desactivada correctamente" : "Error al desactivar la nota";
+            bool ok = await _notaRepository.DesactivarNotaAsync(id);
+            return ok ? "Nota desactivada." : "Error: No se pudo desactivar.";
         }
 
-        // ==============================
-        //   LISTAR NOTAS ACTIVAS
-        // ==============================
-        public async Task<IEnumerable<Nota>> ObtenerNotasActivasAsync()
+        // =============================
+        // MAPEOS
+        // =============================
+        private NotaDTO MapToDTO(Nota n)
         {
-            var notas = await _repository.GetNotasAsync();
-            return notas.Where(n => n.Estado);
-        }
+            return new NotaDTO
+            {
+                IdNota = n.IdNota,
+                IdUsuario = n.IdUsuario,
+                IdAsignatura = n.IdAsignatura,
+                IdPeriodo = n.IdPeriodo,
 
-        // ==============================
-        //     LISTAR NOTAS INACTIVAS
-        // ==============================
-        public async Task<IEnumerable<Nota>> ObtenerNotasInactivasAsync()
-        {
-            var notas = await _repository.GetNotasAsync();
-            return notas.Where(n => !n.Estado);
+                Nota1 = n.Nota1,
+                Nota2 = n.Nota2,
+                Nota3 = n.Nota3,
+                PromedioFinal = n.PromedioFinal,
+                EstadoAcademico = n.EstadoAcademico,
+                Estado = n.Estado,
+
+                Usuario = n.Usuario == null ? null : new UsuarioDTO
+                {
+                    IdUsuario = n.Usuario.IdUsuario,
+                    Nombre = n.Usuario.Nombre,
+                    Apellido = n.Usuario.Apellido
+                },
+
+                Asignatura = n.Asignatura == null ? null : new AsignaturaDTO
+                {
+                    IdAsignatura = n.Asignatura.IdAsignatura,
+                    Nombre = n.Asignatura.Nombre
+                },
+
+                Periodo = n.Periodo == null ? null : new PeriodoDTO
+                {
+                    IdPeriodo = n.Periodo.IdPeriodo,
+                    Nombre = n.Periodo.Nombre,
+                    FechaInicio = n.Periodo.FechaInicio,
+                    FechaFin = n.Periodo.FechaFin
+                }
+            };
         }
     }
 }

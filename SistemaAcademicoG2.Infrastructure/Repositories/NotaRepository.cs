@@ -1,14 +1,14 @@
-﻿using SistemaAcademicoG2.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using SistemaAcademicoG2.Domain.Entities;
 using SistemaAcademicoG2.Domain.Repositories;
 using SistemaAcademicoG2.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SistemaAcademicoG2.Infrastructure.Repositories
 {
-    public class NotaRepository : INotaRepository
+    public class NotaRepository :INotaRepository
     {
         private readonly AppDBContext _context;
 
@@ -17,27 +17,51 @@ namespace SistemaAcademicoG2.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Nota>> GetNotasAsync() =>
-            await _context.Notas.ToListAsync();
-
-        public async Task<Nota?> GetNotaByIdAsync(int id) =>
-            await _context.Notas.FindAsync(id);
-
-        public async Task<Nota> AddNotaAsync(Nota nota)
+        // ==========================================
+        // OBTENER TODAS LAS NOTAS CON RELACIONES
+        // ==========================================
+        public async Task<IEnumerable<Nota>> GetNotasWithIncludesAsync()
         {
-            _context.Notas.Add(nota);
-            await _context.SaveChangesAsync();
-            return nota;
+            return await _context.Notas
+                .Include(n => n.Usuario)
+                .Include(n => n.Asignatura)
+                .Include(n => n.Periodo)
+                .ToListAsync();
         }
 
-        public async Task<Nota> UpdateNotaAsync(Nota nota)
+        // ==========================================
+        // OBTENER NOTA POR ID CON RELACIONES
+        // ==========================================
+        public async Task<Nota?> GetNotaByIdWithIncludesAsync(int id)
+        {
+            return await _context.Notas
+                .Include(n => n.Usuario)
+                .Include(n => n.Asignatura)
+                .Include(n => n.Periodo)
+                .FirstOrDefaultAsync(n => n.IdNota == id);
+        }
+
+        // ==========================================
+        // AGREGAR NOTA
+        // ==========================================
+        public async Task AddNotaAsync(Nota nota)
+        {
+            await _context.Notas.AddAsync(nota);
+            await _context.SaveChangesAsync();
+        }
+
+        // ==========================================
+        // ACTUALIZAR NOTA
+        // ==========================================
+        public async Task UpdateNotaAsync(Nota nota)
         {
             _context.Notas.Update(nota);
             await _context.SaveChangesAsync();
-            return nota;
         }
 
-        // ===== SOFT DELETE =====
+        // ==========================================
+        // DESACTIVAR NOTA (Estado = false)
+        // ==========================================
         public async Task<bool> DesactivarNotaAsync(int id)
         {
             var nota = await _context.Notas.FindAsync(id);
@@ -45,25 +69,17 @@ namespace SistemaAcademicoG2.Infrastructure.Repositories
             if (nota == null)
                 return false;
 
-            nota.Estado = false; // Inactiva
+            nota.Estado = false;
             await _context.SaveChangesAsync();
             return true;
         }
 
-        // ===== ACTIVAR =====
-        public async Task<bool> ActivarNotaAsync(int id)
+        // ==========================================
+        // VERIFICAR SI EXISTE NOTA
+        // ==========================================
+        public async Task<bool> NotaExistsAsync(int id)
         {
-            var nota = await _context.Notas.FindAsync(id);
-
-            if (nota == null)
-                return false;
-
-            nota.Estado = true; // Activa
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.Notas.AnyAsync(n => n.IdNota == id);
         }
-
-        public async Task<bool> NotaExistsAsync(int id) =>
-            await _context.Notas.AnyAsync(n => n.IdNota == id);
     }
 }

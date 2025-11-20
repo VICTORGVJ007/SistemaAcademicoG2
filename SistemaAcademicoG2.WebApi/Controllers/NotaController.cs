@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SistemaAcademicoG2.Domain.Entities;
 using SistemaAcademicoG2.Application.Services;
+using SistemaAcademicoG2.WebApi.DTOs;
+using SistemaAcademicoG2.Domain.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -17,69 +18,74 @@ namespace SistemaAcademicoG2.WebApi.Controllers
             _notaService = notaService;
         }
 
-        // GET: api/nota
+        // ================================
+        // LISTAR ACTIVAS
+        // ================================
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Nota>>> GetActivas()
+        public async Task<ActionResult<IEnumerable<NotaDTO>>> GetActivas()
         {
-            var notas = await _notaService.ObtenerNotasActivasAsync();
-            return Ok(notas);
+            return Ok(await _notaService.ObtenerNotasActivasAsync());
         }
 
-        // GET: api/nota/inactivas
+        // ================================
+        // LISTAR INACTIVAS
+        // ================================
         [HttpGet("inactivas")]
-        public async Task<ActionResult<IEnumerable<Nota>>> GetInactivas()
+        public async Task<ActionResult<IEnumerable<NotaDTO>>> GetInactivas()
         {
-            var notas = await _notaService.ObtenerNotasInactivasAsync();
-            return Ok(notas);
+            return Ok(await _notaService.ObtenerNotasInactivasAsync());
         }
 
+        // ================================
+        // OBTENER POR ID
+        // ================================
         [HttpGet("{id}")]
-        public async Task<ActionResult<Nota>> GetById(int id)
+        public async Task<ActionResult<NotaDTO>> GetById(int id)
         {
             var nota = await _notaService.ObtenerNotaPorIdAsync(id);
 
             if (nota == null)
-                return NotFound($"No se encontró una nota activa con ID {id}");
+                return NotFound($"No existe nota con ID {id}.");
 
             return Ok(nota);
         }
 
+        // ================================
+        // CREAR
+        // ================================
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Nota nota)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var resultado = await _notaService.AgregarNotaAsync(nota);
+            var msg = await _notaService.AgregarNotaAsync(nota);
 
-            if (resultado.StartsWith("Error"))
-                return BadRequest(resultado);
-
-            return Ok(resultado);
+            return msg.StartsWith("Error") ? BadRequest(msg) : Ok(msg);
         }
 
+        // ================================
+        // MODIFICAR
+        // ================================
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] Nota nota)
         {
             nota.IdNota = id;
 
-            var resultado = await _notaService.ModificarNotaAsync(nota);
+            var msg = await _notaService.ModificarNotaAsync(nota);
 
-            if (resultado.StartsWith("Error"))
-                return BadRequest(resultado);
-
-            return Ok(resultado);
+            return msg.StartsWith("Error") ? BadRequest(msg) : Ok(msg);
         }
 
+        // ================================
+        // DESACTIVAR
+        // ================================
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var respuesta = await _notaService.DesactivarNotaAsync(id);
+            var msg = await _notaService.DesactivarNotaAsync(id);
 
-            if (respuesta.StartsWith("Error"))
-                return BadRequest(respuesta);
-
-            return Ok(respuesta);
+            return msg.StartsWith("Error") ? BadRequest(msg) : Ok(msg);
         }
     }
 }
