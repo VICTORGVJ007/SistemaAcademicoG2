@@ -1,59 +1,22 @@
-﻿namespace  Proyecto.API.DTOs
+﻿namespace SistemaAcademicoG2.WebApi.DTOs
 {
     public class NotaDTO
     {
-        // ============================
-        // 📌 DATOS DE LA NOTA
-        // ============================
         public int IdNota { get; set; }
-        public decimal Calificacion { get; set; }
+        public int IdUsuario { get; set; }
+        public int IdAsignatura { get; set; }
+        public int IdPeriodo { get; set; }
+
+        public decimal Nota1 { get; set; }
+        public decimal Nota2 { get; set; }
+        public decimal Nota3 { get; set; }
+        public decimal PromedioFinal { get; set; }
+        public string EstadoAcademico { get; set; } = string.Empty;
         public bool Estado { get; set; }
 
-        // ============================
-        // 📌 FK Y RELACIONES
-        // ============================
-        public int IdUsuario { get; set; }
-        public int IdAsignatura { get; set; }
-        public int IdPeriodo { get; set; }
-
-        // ============================
-        // 📌 DATOS DEL USUARIO
-        // ============================
-        public UsuarioDTO? Usuario { get; set; }
-
-        // ============================
-        // 📌 DATOS DE LA ASIGNATURA
-        // ============================
-        public AsignaturaDTO? Asignatura { get; set; }
-
-        // ============================
-        // 📌 DATOS DEL PERIODO
-        // ============================
-        public PeriodoDTO? Periodo { get; set; }
-    }
-
-    // =============================================================
-    //        SUBDTOs 📌 (viven dentro del mismo archivo)
-    // =============================================================
-
-    public class UsuarioDTO
-    {
-        public int IdUsuario { get; set; }
-        public string Nombre { get; set; } = "";
-        public string Apellido { get; set; } = "";
-    }
-
-    public class AsignaturaDTO
-    {
-        public int IdAsignatura { get; set; }
-        public string Nombre { get; set; } = "";
-    }
-
-    public class PeriodoDTO
-    {
-        public int IdPeriodo { get; set; }
-        public string Nombre { get; set; } = "";
-        public DateTime FechaInicio { get; set; }
-        public DateTime FechaFin { get; set; }
+        // nombres planos para el cliente
+        public string NombreUsuario { get; set; } = string.Empty;
+        public string NombreAsignatura { get; set; } = string.Empty;
+        public string NombrePeriodo { get; set; } = string.Empty;
     }
 }
