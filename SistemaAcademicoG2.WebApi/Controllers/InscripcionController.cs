@@ -2,10 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using SistemaAcademico.Domain.Entities;
 using SistemaAcademicoG2.Infrastructure.Data;
+using SistemaAcademicoG2.WebApi.DTOs;
 
 namespace SistemaAcademicoG2.WebApi.Controllers
 {
-    [Route("api/Inscripcion")]
+    [Route("api/[controller]")]
     [ApiController]
     public class InscripcionController : ControllerBase
     {
@@ -16,86 +17,130 @@ namespace SistemaAcademicoG2.WebApi.Controllers
             _context = context;
         }
 
+        // ================================================
         // GET: api/Inscripcion
+        // ================================================
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Inscripcion>>> GetInscripciones()
+        public async Task<ActionResult<IEnumerable<InscripcionDTO>>> GetInscripciones()
         {
-            return await _context.Inscripciones.ToListAsync();
+            var data = await _context.Inscripciones
+                .AsNoTracking()
+                .Include(i => i.Usuario)
+                .Include(i => i.Grado)
+                .Select(i => new InscripcionDTO
+                {
+                    IdInscripcion = i.IdInscripcion,
+                    FechaIngreso = i.FechaIngreso,
+                    Estado = i.Estado,
+
+                    IdUsuario = i.IdUsuario,
+                    NombreUsuario = i.Usuario.Nombre,
+
+                    IdGrado = i.IdGrado,
+                    NombreGrado = i.Grado.Nombre
+                })
+                .ToListAsync();
+
+            return Ok(data);
         }
 
+        // ================================================
         // GET: api/Inscripcion/5
+        // ================================================
         [HttpGet("{id}")]
-        public async Task<ActionResult<Inscripcion>> GetInscripcion(int id)
+        public async Task<ActionResult<InscripcionDTO>> GetInscripcion(int id)
         {
-            var inscripcion = await _context.Inscripciones.FindAsync(id);
+            var inscripcion = await _context.Inscripciones
+                .AsNoTracking()
+                .Include(i => i.Usuario)
+                .Include(i => i.Grado)
+                .Where(i => i.IdInscripcion == id)
+                .Select(i => new InscripcionDTO
+                {
+                    IdInscripcion = i.IdInscripcion,
+                    FechaIngreso = i.FechaIngreso,
+                    Estado = i.Estado,
+
+                    IdUsuario = i.IdUsuario,
+                    NombreUsuario = i.Usuario.Nombre,
+
+                    IdGrado = i.IdGrado,
+                    NombreGrado = i.Grado.Nombre
+                })
+                .FirstOrDefaultAsync();
 
             if (inscripcion == null)
-            {
-                return NotFound();
-            }
+                return NotFound(new { message = "Inscripción no encontrada." });
 
-            return inscripcion;
+            return Ok(inscripcion);
         }
 
-        // POST: api/Inscripcion
+        // ================================================
+        // POST
+        // ================================================
         [HttpPost]
-        public async Task<ActionResult<Inscripcion>> PostInscripcion(Inscripcion inscripcion)
+        public async Task<ActionResult> PostInscripcion([FromBody] InscripcionDTO dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var inscripcion = new Inscripcion
+            {
+                FechaIngreso = dto.FechaIngreso,
+                Estado = dto.Estado,
+                IdUsuario = dto.IdUsuario,
+                IdGrado = dto.IdGrado
+            };
+
             _context.Inscripciones.Add(inscripcion);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetInscripcion", new { id = inscripcion.IdInscripcion }, inscripcion);
+            return CreatedAtAction(nameof(GetInscripcion),
+                new { id = inscripcion.IdInscripcion }, dto);
         }
 
-        // PUT: api/Inscripcion/5
+        // ================================================
+        // PUT
+        // ================================================
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutInscripcion(int id, Inscripcion inscripcion)
+        public async Task<IActionResult> PutInscripcion(int id, [FromBody] InscripcionDTO dto)
         {
-            if (id != inscripcion.IdInscripcion)
-            {
-                return BadRequest();
-            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            _context.Entry(inscripcion).State = EntityState.Modified;
+            if (id != dto.IdInscripcion)
+                return BadRequest(new { message = "El ID no coincide." });
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!InscripcionExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            var inscripcion = await _context.Inscripciones.FindAsync(id);
+
+            if (inscripcion == null)
+                return NotFound(new { message = "Inscripción no encontrada." });
+
+            inscripcion.FechaIngreso = dto.FechaIngreso;
+            inscripcion.Estado = dto.Estado;
+            inscripcion.IdUsuario = dto.IdUsuario;
+            inscripcion.IdGrado = dto.IdGrado;
+
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        // DELETE: api/Inscripcion/5
+        // ================================================
+        // DELETE
+        // ================================================
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteInscripcion(int id)
         {
             var inscripcion = await _context.Inscripciones.FindAsync(id);
+
             if (inscripcion == null)
-            {
-                return NotFound();
-            }
+                return NotFound(new { message = "No existe la inscripción." });
 
             _context.Inscripciones.Remove(inscripcion);
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool InscripcionExists(int id)
-        {
-            return _context.Inscripciones.Any(e => e.IdInscripcion == id);
         }
     }
 }
