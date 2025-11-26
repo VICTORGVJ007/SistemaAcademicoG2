@@ -8,15 +8,15 @@ namespace SistemaAcademicoG2.Domain.Entities
     public class GradoAsignatura
     {
         [Key]
-        [Column("Id")]
+        [Column("IdGradoAsignatura")]
         public int IdGradoAsignatura { get; set; }
 
         [Required(ErrorMessage = "El grado es obligatorio")]
-        [Column("GradoId")]
+        [Column("idGrado")]
         public int IdGrado { get; set; }
 
         [Required(ErrorMessage = "La asignatura es obligatoria")]
-        [Column("AsignaturaId")]
+        [Column("IdAsignatura")]
         public int IdAsignatura { get; set; }
 
         [Column("Estado")]

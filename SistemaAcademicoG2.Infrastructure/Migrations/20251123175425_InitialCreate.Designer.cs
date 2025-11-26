@@ -12,8 +12,8 @@ using SistemaAcademicoG2.Infrastructure.Data;
 namespace SistemaAcademicoG2.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20251119162507_ActualizarNota")]
-    partial class ActualizarNota
+    [Migration("20251123175425_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,13 +54,20 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasColumnName("IdUsuario");
 
-                    b.HasKey("IdInscripcion");
+                    b.Property<int?>("idGrado")
+                        .HasColumnType("int");
 
-                    b.HasIndex("IdGrado");
+                    b.HasKey("IdInscripcion");
 
                     b.HasIndex("IdUsuario");
 
-                    b.ToTable("t_Inscripcion", (string)null);
+                    b.HasIndex("idGrado");
+
+                    b.ToTable("t_Inscripcion", null, t =>
+                        {
+                            t.Property("idGrado")
+                                .HasColumnName("idGrado1");
+                        });
                 });
 
             modelBuilder.Entity("SistemaAcademicoG2.Domain.Entities.Asignatura", b =>
@@ -142,20 +149,16 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("IdDGA"));
 
+                    b.Property<int?>("AsignaturaIdAsignatura")
+                        .HasColumnType("int");
+
                     b.Property<bool>("Estado")
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("Estado");
 
-                    b.Property<int?>("GradoAsignaturaIdGradoAsignatura")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdAsignatura")
+                    b.Property<int>("IdGradoAsignatura")
                         .HasColumnType("int")
-                        .HasColumnName("IdAsignatura");
-
-                    b.Property<int>("IdGrado")
-                        .HasColumnType("int")
-                        .HasColumnName("IdGrado");
+                        .HasColumnName("IdGradoAsignatura");
 
                     b.Property<int>("IdUsuario")
                         .HasColumnType("int")
@@ -163,11 +166,9 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
 
                     b.HasKey("IdDGA");
 
-                    b.HasIndex("GradoAsignaturaIdGradoAsignatura");
+                    b.HasIndex("AsignaturaIdAsignatura");
 
-                    b.HasIndex("IdAsignatura");
-
-                    b.HasIndex("IdGrado");
+                    b.HasIndex("IdGradoAsignatura");
 
                     b.HasIndex("IdUsuario");
 
@@ -203,7 +204,7 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
                     b.Property<int>("IdGradoAsignatura")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("Id");
+                        .HasColumnName("IdGradoAsignatura");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("IdGradoAsignatura"));
 
@@ -213,11 +214,11 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
 
                     b.Property<int>("IdAsignatura")
                         .HasColumnType("int")
-                        .HasColumnName("AsignaturaId");
+                        .HasColumnName("IdAsignatura");
 
                     b.Property<int>("IdGrado")
                         .HasColumnType("int")
-                        .HasColumnName("GradoId");
+                        .HasColumnName("idGrado");
 
                     b.HasKey("IdGradoAsignatura");
 
@@ -225,7 +226,7 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
 
                     b.HasIndex("IdGrado");
 
-                    b.ToTable("T_GradoAsignatura");
+                    b.ToTable("T_GradoAsignatura", (string)null);
                 });
 
             modelBuilder.Entity("SistemaAcademicoG2.Domain.Entities.Nota", b =>
@@ -392,17 +393,15 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
 
             modelBuilder.Entity("SistemaAcademico.Domain.Entities.Inscripcion", b =>
                 {
-                    b.HasOne("SistemaAcademicoG2.Domain.Entities.Grado", "Grado")
-                        .WithMany()
-                        .HasForeignKey("IdGrado")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("SistemaAcademicoG2.Domain.Entities.Usuario", "Usuario")
                         .WithMany()
                         .HasForeignKey("IdUsuario")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("SistemaAcademicoG2.Domain.Entities.Grado", "Grado")
+                        .WithMany()
+                        .HasForeignKey("idGrado");
 
                     b.Navigation("Grado");
 
@@ -430,19 +429,13 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
 
             modelBuilder.Entity("SistemaAcademicoG2.Domain.Entities.DocenteAsignaturaGrado", b =>
                 {
-                    b.HasOne("SistemaAcademicoG2.Domain.Entities.GradoAsignatura", null)
-                        .WithMany("DocentesGradoAsignatura")
-                        .HasForeignKey("GradoAsignaturaIdGradoAsignatura");
-
-                    b.HasOne("SistemaAcademicoG2.Domain.Entities.Asignatura", "Asignatura")
+                    b.HasOne("SistemaAcademicoG2.Domain.Entities.Asignatura", null)
                         .WithMany("Docentes")
-                        .HasForeignKey("IdAsignatura")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AsignaturaIdAsignatura");
 
-                    b.HasOne("SistemaAcademicoG2.Domain.Entities.Grado", "Grado")
-                        .WithMany()
-                        .HasForeignKey("IdGrado")
+                    b.HasOne("SistemaAcademicoG2.Domain.Entities.GradoAsignatura", "GradoAsignatura")
+                        .WithMany("DocentesGradoAsignatura")
+                        .HasForeignKey("IdGradoAsignatura")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -452,9 +445,7 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Asignatura");
-
-                    b.Navigation("Grado");
+                    b.Navigation("GradoAsignatura");
 
                     b.Navigation("Usuario");
                 });

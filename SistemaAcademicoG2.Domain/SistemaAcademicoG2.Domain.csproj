@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SistemaAcademicoG2.DTOs\SistemaAcademicoG2.DTOs.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -85,24 +85,24 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
                 name: "T_GradoAsignatura",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    IdGradoAsignatura = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    GradoId = table.Column<int>(type: "int", nullable: false),
-                    AsignaturaId = table.Column<int>(type: "int", nullable: false),
+                    idGrado = table.Column<int>(type: "int", nullable: false),
+                    IdAsignatura = table.Column<int>(type: "int", nullable: false),
                     Estado = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_T_GradoAsignatura", x => x.Id);
+                    table.PrimaryKey("PK_T_GradoAsignatura", x => x.IdGradoAsignatura);
                     table.ForeignKey(
-                        name: "FK_T_GradoAsignatura_t_Asignatura_AsignaturaId",
-                        column: x => x.AsignaturaId,
+                        name: "FK_T_GradoAsignatura_t_Asignatura_IdAsignatura",
+                        column: x => x.IdAsignatura,
                         principalTable: "t_Asignatura",
                         principalColumn: "IdAsignatura",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_T_GradoAsignatura_t_Grado_GradoId",
-                        column: x => x.GradoId,
+                        name: "FK_T_GradoAsignatura_t_Grado_idGrado",
+                        column: x => x.idGrado,
                         principalTable: "t_Grado",
                         principalColumn: "idGrado",
                         onDelete: ReferentialAction.Cascade);
@@ -145,31 +145,24 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
                     IdDGA = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     IdUsuario = table.Column<int>(type: "int", nullable: false),
-                    IdGrado = table.Column<int>(type: "int", nullable: false),
-                    IdAsignatura = table.Column<int>(type: "int", nullable: false),
+                    IdGradoAsignatura = table.Column<int>(type: "int", nullable: false),
                     Estado = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    GradoAsignaturaIdGradoAsignatura = table.Column<int>(type: "int", nullable: true)
+                    AsignaturaIdAsignatura = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_t_docenteasignaturagrado", x => x.IdDGA);
                     table.ForeignKey(
-                        name: "FK_t_docenteasignaturagrado_T_GradoAsignatura_GradoAsignaturaId~",
-                        column: x => x.GradoAsignaturaIdGradoAsignatura,
+                        name: "FK_t_docenteasignaturagrado_T_GradoAsignatura_IdGradoAsignatura",
+                        column: x => x.IdGradoAsignatura,
                         principalTable: "T_GradoAsignatura",
-                        principalColumn: "Id");
+                        principalColumn: "IdGradoAsignatura",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_t_docenteasignaturagrado_t_Asignatura_IdAsignatura",
-                        column: x => x.IdAsignatura,
+                        name: "FK_t_docenteasignaturagrado_t_Asignatura_AsignaturaIdAsignatura",
+                        column: x => x.AsignaturaIdAsignatura,
                         principalTable: "t_Asignatura",
-                        principalColumn: "IdAsignatura",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_t_docenteasignaturagrado_t_Grado_IdGrado",
-                        column: x => x.IdGrado,
-                        principalTable: "t_Grado",
-                        principalColumn: "idGrado",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "IdAsignatura");
                     table.ForeignKey(
                         name: "FK_t_docenteasignaturagrado_t_Usuario_IdUsuario",
                         column: x => x.IdUsuario,
@@ -189,17 +182,17 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
                     idGrado = table.Column<int>(type: "int", nullable: false),
                     fechaIngreso = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     anioLectivo = table.Column<int>(type: "int", nullable: false),
-                    estado = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                    estado = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    idGrado1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_t_Inscripcion", x => x.idInscripcion);
                     table.ForeignKey(
-                        name: "FK_t_Inscripcion_t_Grado_idGrado",
-                        column: x => x.idGrado,
+                        name: "FK_t_Inscripcion_t_Grado_idGrado1",
+                        column: x => x.idGrado1,
                         principalTable: "t_Grado",
-                        principalColumn: "idGrado",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "idGrado");
                     table.ForeignKey(
                         name: "FK_t_Inscripcion_t_Usuario_IdUsuario",
                         column: x => x.IdUsuario,
@@ -294,19 +287,14 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
-                name: "IX_t_docenteasignaturagrado_GradoAsignaturaIdGradoAsignatura",
+                name: "IX_t_docenteasignaturagrado_AsignaturaIdAsignatura",
                 table: "t_docenteasignaturagrado",
-                column: "GradoAsignaturaIdGradoAsignatura");
+                column: "AsignaturaIdAsignatura");
 
             migrationBuilder.CreateIndex(
-                name: "IX_t_docenteasignaturagrado_IdAsignatura",
+                name: "IX_t_docenteasignaturagrado_IdGradoAsignatura",
                 table: "t_docenteasignaturagrado",
-                column: "IdAsignatura");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_t_docenteasignaturagrado_IdGrado",
-                table: "t_docenteasignaturagrado",
-                column: "IdGrado");
+                column: "IdGradoAsignatura");
 
             migrationBuilder.CreateIndex(
                 name: "IX_t_docenteasignaturagrado_IdUsuario",
@@ -314,19 +302,19 @@ namespace SistemaAcademicoG2.Infrastructure.Migrations
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
-                name: "IX_T_GradoAsignatura_AsignaturaId",
+                name: "IX_T_GradoAsignatura_IdAsignatura",
                 table: "T_GradoAsignatura",
-                column: "AsignaturaId");
+                column: "IdAsignatura");
 
             migrationBuilder.CreateIndex(
-                name: "IX_T_GradoAsignatura_GradoId",
+                name: "IX_T_GradoAsignatura_idGrado",
                 table: "T_GradoAsignatura",
-                column: "GradoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_t_Inscripcion_idGrado",
-                table: "t_Inscripcion",
                 column: "idGrado");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_t_Inscripcion_idGrado1",
+                table: "t_Inscripcion",
+                column: "idGrado1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_t_Inscripcion_IdUsuario",

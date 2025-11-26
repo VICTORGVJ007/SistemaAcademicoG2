@@ -15,12 +15,8 @@ namespace SistemaAcademicoG2.Domain.Entities
         public int IdUsuario { get; set; }
 
         [Required]
-        [Column("IdGrado")]
-        public int IdGrado { get; set; }
-
-        [Required]
-        [Column("IdAsignatura")]
-        public int IdAsignatura { get; set; }
+        [Column("IdGradoAsignatura")]
+        public int IdGradoAsignatura { get; set; }
 
         [Column("Estado")]
         public bool Estado { get; set; }
@@ -28,11 +24,8 @@ namespace SistemaAcademicoG2.Domain.Entities
         [ForeignKey("IdUsuario")]
         public Usuario? Usuario { get; set; }
 
-        [ForeignKey("IdGrado")]
-        public Grado? Grado { get; set; }
-
-        [ForeignKey("IdAsignatura")]
-        public Asignatura? Asignatura { get; set; }
+        [ForeignKey("IdGradoAsignatura")]
+        public GradoAsignatura? GradoAsignatura { get; set; }
 
         public ICollection<Asistencia>? Asistencias { get; set; }
 

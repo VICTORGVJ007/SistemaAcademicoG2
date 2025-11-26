@@ -77,6 +77,13 @@ namespace SistemaAcademicoG2.WebApi.Controllers
             return Ok(usuarios);
         }
 
+        [HttpGet("docentes")]
+        public async Task<ActionResult<IEnumerable<Usuario>>> GetDocentes()
+        {
+            var usuarios = await _usuarioService.ObtenerDocentesAsync();
+            return Ok(usuarios);
+        }
+
 
         // ==========================
         // DELETE (Soft Delete): api/Usuario/5

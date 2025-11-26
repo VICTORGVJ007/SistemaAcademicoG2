@@ -12,50 +12,60 @@ namespace SistemaAcademicoG2.Application.Services
             _repository = repository;
         }
 
-        public async Task<IEnumerable<DocenteAsignaturaGrado>> ObtenerActivosAsync()
-        {
-            return await _repository.GetActivosAsync();
-        }
+        // -----------------------------
+        //        MÉTODOS GET
+        // -----------------------------
+        public Task<IEnumerable<DocenteAsignaturaGrado>> ObtenerActivosAsync() =>
+            _repository.GetActivosAsync();
 
-        public async Task<IEnumerable<DocenteAsignaturaGrado>> ObtenerInactivosAsync()
-        {
-            return await _repository.GetInactivosAsync();
-        }
+        public Task<IEnumerable<DocenteAsignaturaGrado>> ObtenerInactivosAsync() =>
+            _repository.GetInactivosAsync();
 
-        public async Task<DocenteAsignaturaGrado?> ObtenerPorIdAsync(int id)
-        {
-            return await _repository.GetByIdAsync(id);
-        }
+        public Task<DocenteAsignaturaGrado?> ObtenerPorIdAsync(int id) =>
+            _repository.GetByIdAsync(id);
 
+        public Task<List<GradoAsignatura>> ObtenerAsignaturasPorGradoAsync(int idGrado) =>
+            _repository.GetAsignaturasPorGradoAsync(idGrado);
+
+        // -----------------------------
+        //        MÉTODO AGREGAR
+        // -----------------------------
         public async Task<string> AgregarAsync(DocenteAsignaturaGrado entidad)
         {
-            if (await _repository.ExisteDuplicadoAsync(entidad.IdUsuario, entidad.IdGrado, entidad.IdAsignatura))
-                return "Error: Esta relación ya existe.";
+            if (await _repository.ExisteDuplicadoAsync(entidad.IdUsuario, entidad.IdGradoAsignatura))
+                return "Error: Esta asignación ya existe.";
 
             entidad.Estado = true;
+
             await _repository.AddAsync(entidad);
-            return "Asignación creada correctamente.";
+            return "Asignación agregada correctamente.";
         }
 
+        // -----------------------------
+        //        MÉTODO ACTUALIZAR
+        // -----------------------------
         public async Task<string> ActualizarAsync(DocenteAsignaturaGrado entidad)
         {
             var existente = await _repository.GetByIdAsync(entidad.IdDGA);
+
             if (existente == null)
                 return "Error: Registro no encontrado.";
 
             existente.IdUsuario = entidad.IdUsuario;
-            existente.IdGrado = entidad.IdGrado;
-            existente.IdAsignatura = entidad.IdAsignatura;
+            existente.IdGradoAsignatura = entidad.IdGradoAsignatura;
             existente.Estado = entidad.Estado;
 
             await _repository.SaveChangesAsync();
             return "Asignación actualizada correctamente.";
         }
 
+        // -----------------------------
+        //   MÉTODOS ACTIVAR/DESACTIVAR
+        // -----------------------------
         public async Task<string> DesactivarAsync(int id)
         {
             if (!await _repository.DesactivarAsync(id))
-                return "Error: No se encontró el registro.";
+                return "Error: Registro no encontrado.";
 
             return "Asignación desactivada correctamente.";
         }
@@ -63,9 +73,12 @@ namespace SistemaAcademicoG2.Application.Services
         public async Task<string> ActivarAsync(int id)
         {
             if (!await _repository.ActivarAsync(id))
-                return "Error: No se encontró el registro.";
+                return "Error: Registro no encontrado.";
 
             return "Asignación activada correctamente.";
         }
     }
 }
+
+
+

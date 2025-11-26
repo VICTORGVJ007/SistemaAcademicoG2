@@ -12,12 +12,12 @@ namespace SistemaAcademicoG2.Domain.Entities
         public int IdAsistencia { get; set; }
 
         [Required]
-        [Column("IdUsuario")]
-        public int IdUsuario { get; set; }
-
-        [Required]
         [Column("IdDGA")]
         public int IdDGA { get; set; }
+
+        [Required]
+        [Column("IdUsuario")]
+        public int IdUsuario { get; set; }
 
         [Required]
         [Column("Fecha")]
@@ -37,9 +37,9 @@ namespace SistemaAcademicoG2.Domain.Entities
 
         // Relaciones
         [ForeignKey(nameof(IdUsuario))]
-        public Usuario Usuario { get; set; }
+        public Usuario? Usuario { get; set; }
 
         [ForeignKey(nameof(IdDGA))]
-        public DocenteAsignaturaGrado DocenteAsignaturaGrado { get; set; }
+        public DocenteAsignaturaGrado? DocenteAsignaturaGrado { get; set; }
     }
 }

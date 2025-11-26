@@ -77,4 +77,13 @@ public class GradoAsignaturaRepository : IGradoAsignaturaRepository
 
     public async Task<bool> GradoAsignaturaExistsAsync(int id) =>
         await _context.GradoAsignaturas.AnyAsync(g => g.IdGradoAsignatura == id);
+
+    public async Task<IEnumerable<GradoAsignatura>> GetByGradoAsync(int idGrado)
+    {
+        return await _context.GradoAsignaturas
+            .Where(ga => ga.IdGrado == idGrado)
+            .Include(ga => ga.Asignatura)
+            .ToListAsync();
+    }
+
 }

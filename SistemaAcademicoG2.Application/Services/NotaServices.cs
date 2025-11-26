@@ -44,9 +44,10 @@ namespace SistemaAcademicoG2.Application.Services
             return nota == null ? null : MapToDTO(nota);
         }
 
-        // =============================
-        // AGREGAR NOTA
-        // =============================
+         ///=============================
+        /// AGREGAR NOTA
+         /// =============================
+         
         public async Task<string> AgregarNotaAsync(Nota nota)
         {
             if (nota == null)

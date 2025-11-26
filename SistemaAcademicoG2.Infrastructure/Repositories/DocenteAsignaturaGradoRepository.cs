@@ -1,6 +1,7 @@
 ﻿using SistemaAcademicoG2.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
+using SistemaAcademicoG2.Domain.Repositories;
 using SistemaAcademicoG2.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 public class DocenteAsignaturaGradoRepository : IDocenteAsignaturaGradoRepository
 {
@@ -14,24 +15,24 @@ public class DocenteAsignaturaGradoRepository : IDocenteAsignaturaGradoRepositor
     public async Task<IEnumerable<DocenteAsignaturaGrado>> GetActivosAsync() =>
         await _context.DocenteAsignaturaGrados
             .Include(x => x.Usuario)
-            .Include(x => x.Grado)
-            .Include(x => x.Asignatura)
+            .Include(x => x.GradoAsignatura)!.ThenInclude(g => g.Grado)
+            .Include(x => x.GradoAsignatura)!.ThenInclude(g => g.Asignatura)
             .Where(x => x.Estado)
             .ToListAsync();
 
     public async Task<IEnumerable<DocenteAsignaturaGrado>> GetInactivosAsync() =>
         await _context.DocenteAsignaturaGrados
             .Include(x => x.Usuario)
-            .Include(x => x.Grado)
-            .Include(x => x.Asignatura)
+            .Include(x => x.GradoAsignatura)!.ThenInclude(g => g.Grado)
+            .Include(x => x.GradoAsignatura)!.ThenInclude(g => g.Asignatura)
             .Where(x => !x.Estado)
             .ToListAsync();
 
     public async Task<DocenteAsignaturaGrado?> GetByIdAsync(int id) =>
         await _context.DocenteAsignaturaGrados
             .Include(x => x.Usuario)
-            .Include(x => x.Grado)
-            .Include(x => x.Asignatura)
+            .Include(x => x.GradoAsignatura)!.ThenInclude(g => g.Grado)
+            .Include(x => x.GradoAsignatura)!.ThenInclude(g => g.Asignatura)
             .FirstOrDefaultAsync(x => x.IdDGA == id);
 
     public async Task AddAsync(DocenteAsignaturaGrado entidad)
@@ -60,18 +61,22 @@ public class DocenteAsignaturaGradoRepository : IDocenteAsignaturaGradoRepositor
         return true;
     }
 
-    public async Task<bool> ExisteDuplicadoAsync(int idUsuario, int idGrado, int idAsignatura)
+    public async Task<bool> ExisteDuplicadoAsync(int idUsuario, int idGradoAsignatura)
     {
         return await _context.DocenteAsignaturaGrados.AnyAsync(x =>
             x.IdUsuario == idUsuario &&
-            x.IdGrado == idGrado &&
-            x.IdAsignatura == idAsignatura
+            x.IdGradoAsignatura == idGradoAsignatura
         );
     }
 
-    public async Task SaveChangesAsync()
+    public async Task<List<GradoAsignatura>> GetAsignaturasPorGradoAsync(int idGrado)
     {
-        await _context.SaveChangesAsync();
+        return await _context.GradoAsignaturas
+            .Include(ga => ga.Asignatura)
+            .Where(ga => ga.IdGrado == idGrado && ga.Estado)
+            .ToListAsync();
     }
-}
 
+    public async Task SaveChangesAsync() =>
+        await _context.SaveChangesAsync();
+}

@@ -43,9 +43,9 @@ namespace SistemaAcademico.Domain.Entities
 
         // Relaciones
         [ForeignKey("IdUsuario")]
-        public Usuario Usuario { get; set; }
+        public Usuario? Usuario { get; set; }
 
-        [ForeignKey("IdGrado")]
-        public Grado Grado { get; set; }
+        [ForeignKey("idGrado")]
+        public Grado? Grado { get; set; }
     }
 }

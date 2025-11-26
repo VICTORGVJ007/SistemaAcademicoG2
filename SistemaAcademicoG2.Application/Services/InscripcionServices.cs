@@ -1,78 +1,167 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using SistemaAcademico.Domain.Entities;
-using SistemaAcademicoG2.Domain.Repositories;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Threading.Tasks;
+//using SistemaAcademico.Domain.Entities;
+//using SistemaAcademicoG2.Domain.Repositories;
+//using SistemaAcademicoG2.DTOs;
 
-namespace SistemaAcademicoG2.Application.Services
-{
-    public class InscripcionService
-    {
-        private readonly IInscripcionRepository _repository;
+//namespace SistemaAcademicoG2.Application.Services
+//{
+//    public class InscripcionService
+//    {
+//        private readonly IInscripcionRepository _repository;
 
-        public InscripcionService(IInscripcionRepository repository)
-        {
-            _repository = repository;
-        }
+//        public InscripcionService(IInscripcionRepository repository)
+//        {
+//            _repository = repository;
+//        }
 
-        // Obtener todas las inscripciones
-        public async Task<IEnumerable<Inscripcion>> ObtenerTodasAsync()
-        {
-            return await _repository.GetAllAsync();
-        }
+//        // 🔹 Obtener todas las inscripciones (DTO)
+//        public async Task<IEnumerable<InscripcionDTO>> ObtenerTodasAsync()
+//        {
+//            var data = await _repository.GetAllAsync();
 
-        // Obtener una inscripción por Id
-        public async Task<Inscripcion?> ObtenerPorIdAsync(int idInscripcion)
-        {
-            return await _repository.GetByIdAsync(idInscripcion);
-        }
+//            return data.Select(i => new InscripcionDTO
+//            {
+//                IdInscripcion = i.IdInscripcion,
+//                IdUsuario = i.IdUsuario,
+//                NombreUsuario = i.Usuario?.Nombre ?? string.Empty,
+//                IdGrado = i.IdGrado,
+//                NombreGrado = i.Grado?.Nombre ?? string.Empty,
+//                FechaIngreso = i.FechaIngreso,
+//                AnioLectivo = i.AnioLectivo,
+//                Estado = i.Estado
+//            }).ToList();
+//        }
 
-        // Agregar una nueva inscripción (evitar duplicados por Id)
-        public async Task<string> AgregarInscripcionAsync(Inscripcion nuevaInscripcion)
-        {
-            try
-            {
-                var existe = await _repository.InscripcionExistsAsync(nuevaInscripcion.IdInscripcion);
-                if (existe)
-                    return "Error: Ya existe una inscripción con ese Id";
+//        // 🔹 Obtener por Id (DTO)
+//        public async Task<InscripcionDTO?> ObtenerPorIdAsync(int idInscripcion)
+//        {
+//            var i = await _repository.GetByIdAsync(idInscripcion);
+//            if (i == null) return null;
 
-                await _repository.AddAsync(nuevaInscripcion);
-                return "Inscripción registrada correctamente";
-            }
-            catch (Exception ex)
-            {
-                return "Error de servidor: " + ex.Message;
-            }
-        }
+//            return new InscripcionDTO
+//            {
+//                IdInscripcion = i.IdInscripcion,
+//                IdUsuario = i.IdUsuario,
+//                NombreUsuario = i.Usuario?.Nombre ?? string.Empty,
+//                IdGrado = i.IdGrado,
+//                NombreGrado = i.Grado?.Nombre ?? string.Empty,
+//                FechaIngreso = i.FechaIngreso,
+//                AnioLectivo = i.AnioLectivo,
+//                Estado = i.Estado
+//            };
+//        }
 
-        // Actualizar una inscripción existente
-        public async Task<string> ActualizarInscripcionAsync(Inscripcion inscripcion)
-        {
-            try
-            {
-                var existe = await _repository.InscripcionExistsAsync(inscripcion.IdInscripcion);
-                if (!existe)
-                    return "Error: No se encontró la inscripción";
+//        // 🔹 Agregar (recibe DTO, convierte a entidad)
+//        public async Task<string> AgregarInscripcionAsync(InscripcionDTO dto)
+//        {
+//            try
+//            {
+//                var nuevaInscripcion = new Inscripcion
+//                {
+//                    IdInscripcion = dto.IdInscripcion,
+//                    IdUsuario = dto.IdUsuario,
+//                    IdGrado = dto.IdGrado,
+//                    FechaIngreso = dto.FechaIngreso,
+//                    AnioLectivo = dto.AnioLectivo,
+//                    Estado = dto.Estado
+//                };
 
-                await _repository.UpdateAsync(inscripcion);
-                return "Inscripción actualizada correctamente";
-            }
-            catch (Exception ex)
-            {
-                return "Error de servidor: " + ex.Message;
-            }
-        }
+//                var existe = await _repository.InscripcionExistsAsync(dto.IdInscripcion);
+//                if (existe)
+//                    return "Error: Ya existe una inscripción con ese Id";
 
-        // Caso de uso adicional: Obtener inscripciones por grado
-        public async Task<IEnumerable<Inscripcion>> ObtenerPorGradoAsync(int idGrado)
-        {
-            return await _repository.GetByGradoIdAsync(idGrado);
-        }
+//                await _repository.AddAsync(nuevaInscripcion);
+//                return "Inscripción registrada correctamente";
+//            }
+//            catch (Exception ex)
+//            {
+//                return "Error de servidor: " + ex.Message;
+//            }
+//        }
 
-        // Caso de uso adicional: Obtener inscripciones por usuario
-        public async Task<IEnumerable<Inscripcion>> ObtenerPorUsuarioAsync(int idUsuario)
-        {
-            return await _repository.GetByUsuarioIdAsync(idUsuario);
-        }
-    }
-}
+//        // 🔹 Actualizar (DTO → Entidad)
+//        public async Task<string> ActualizarInscripcionAsync(InscripcionDTO dto)
+//        {
+//            try
+//            {
+//                var existe = await _repository.InscriptionExistsAsync(dto.IdInscripcion);
+//                if (!existe)
+//                    return "Error: No se encontró la inscripción";
+
+//                var inscripcion = new Inscripcion
+//                {
+//                    IdInscripcion = dto.IdInscripcion,
+//                    IdUsuario = dto.IdUsuario,
+//                    IdGrado = dto.IdGrado,
+//                    FechaIngreso = dto.FechaIngreso,
+//                    AnioLectivo = dto.AnioLectivo,
+//                    Estado = dto.Estado
+//                };
+
+//                await _repository.UpdateAsync(inscripcion);
+//                return "Inscripción actualizada correctamente";
+//            }
+//            catch (Exception ex)
+//            {
+//                return "Error de servidor: " + ex.Message;
+//            }
+//        }
+
+//        // 🔹 Cambiar estado sin modificar DTO
+//        public async Task<string> CambiarEstadoAsync(int id)
+//        {
+//            try
+//            {
+//                var existe = await _repository.InscripcionExistsAsync(id);
+//                if (!existe)
+//                    return "Error: No se encontró la inscripción";
+
+//                await _repository.CambiarEstadoAsync(id);
+//                return "Estado cambiado correctamente";
+//            }
+//            catch (Exception ex)
+//            {
+//                return "Error de servidor: " + ex.Message;
+//            }
+//        }
+
+//        // 🔹 Get por grado (DTO)
+//        public async Task<IEnumerable<InscripcionDTO>> ObtenerPorGradoAsync(int idGrado)
+//        {
+//            var data = await _repository.GetByGradoIdAsync(idGrado);
+
+//            return data.Select(i => new InscripcionDTO
+//            {
+//                IdInscripcion = i.IdInscripcion,
+//                IdUsuario = i.IdUsuario,
+//                NombreUsuario = i.Usuario?.Nombre ?? string.Empty,
+//                IdGrado = i.IdGrado,
+//                NombreGrado = i.Grado?.Nombre ?? string.Empty,
+//                FechaIngreso = i.FechaIngreso,
+//                AnioLectivo = i.AnioLectivo,
+//                Estado = i.Estado
+//            }).ToList();
+//        }
+
+//        // 🔹 Get por usuario (DTO)
+//        public async Task<IEnumerable<InscripcionDTO>> ObtenerPorUsuarioAsync(int idUsuario)
+//        {
+//            var data = await _repository.GetByUsuarioIdAsync(idUsuario);
+
+//            return data.Select(i => new InscripcionDTO
+//            {
+//                IdInscripcion = i.IdInscripcion,
+//                IdUsuario = i.IdUsuario,
+//                NombreUsuario = i.Usuario?.Nombre ?? string.Empty,
+//                IdGrado = i.IdGrado,
+//                NombreGrado = i.Grado?.Nombre ?? string.Empty,
+//                FechaIngreso = i.FechaIngreso,
+//                AnioLectivo = i.AnioLectivo,
+//                Estado = i.Estado
+//            }).ToList();
+//        }
+//    }
+//}

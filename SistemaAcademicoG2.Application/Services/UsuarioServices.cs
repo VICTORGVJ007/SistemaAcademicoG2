@@ -145,6 +145,12 @@ namespace SistemaAcademicoG2.Application.Services
             return usuarios;
         }
 
+        public async Task<IEnumerable<Usuario>> ObtenerDocentesAsync()
+        {
+            const int RolDocente = 3; // Ajusta según tu tabla
+            var usuarios = await _repository.GetByRolAsync(RolDocente);
+            return usuarios;
+        }
 
         // ==========================
         // Validaciones

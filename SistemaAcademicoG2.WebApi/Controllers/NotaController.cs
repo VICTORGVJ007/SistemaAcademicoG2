@@ -18,27 +18,20 @@ namespace SistemaAcademicoG2.WebApi.Controllers
             _notaService = notaService;
         }
 
-        // ============================================
-        // LISTAR NOTAS ACTIVAS
-        // ============================================
+        
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<NotaDTO>>> GetActivas()
         {
             return Ok(await _notaService.ObtenerNotasActivasAsync());
         }
 
-        // ============================================
-        // LISTAR NOTAS INACTIVAS
-        // ============================================
-        [HttpGet("inactivas")]
+             [HttpGet("inactivas")]
         public async Task<ActionResult<IEnumerable<NotaDTO>>> GetInactivas()
         {
             return Ok(await _notaService.ObtenerNotasInactivasAsync());
         }
 
-        // ============================================
-        // OBTENER POR ID
-        // ============================================
         [HttpGet("{id}")]
         public async Task<ActionResult<NotaDTO>> GetById(int id)
         {
@@ -50,16 +43,14 @@ namespace SistemaAcademicoG2.WebApi.Controllers
             return Ok(nota);
         }
 
-        // ============================================
-        // CREAR
-        // ============================================
+    
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] NotaDTO dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // ===== MAPEO DTO → ENTITY =====
+             
             var nota = new Nota
             {
                 IdNota = dto.IdNota,
@@ -78,16 +69,14 @@ namespace SistemaAcademicoG2.WebApi.Controllers
             return msg.StartsWith("Error") ? BadRequest(msg) : Ok(msg);
         }
 
-        // ============================================
-        // MODIFICAR
-        // ============================================
+      
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] NotaDTO dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // ===== MAPEO DTO → ENTITY =====
+    
             var nota = new Nota
             {
                 IdNota = id,
@@ -106,9 +95,7 @@ namespace SistemaAcademicoG2.WebApi.Controllers
             return msg.StartsWith("Error") ? BadRequest(msg) : Ok(msg);
         }
 
-        // ============================================
-        // DESACTIVAR
-        // ============================================
+        
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
